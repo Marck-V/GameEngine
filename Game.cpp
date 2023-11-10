@@ -10,8 +10,7 @@ Game::Game()
 {
 	
 	Logger::Log("Engine Constructor Called!");
-	Logger::Error("This is an error message!");
-	Logger::Warn("This is a warning message!");
+	
 	isRunning = false;
 }
 

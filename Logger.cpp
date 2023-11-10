@@ -4,6 +4,9 @@
 #include <chrono>
 #include <ctime>
 
+
+std::vector<LogEntry> Logger::messages;
+
 std::string CurrentDateTimeAsString()
 {
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -21,34 +24,42 @@ std::string CurrentDateTimeAsString()
 
 void Logger::Log(const std::string& message)
 {
-	// Green
-	/*HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 2);
-	
-	std::cout << "LOG:[" << CurrentDateTimeAsString() << "]: " << message << std::endl;*/
+	LogEntry logEntry;
 
-	std::string output = "LOG: [" + CurrentDateTimeAsString() + "]: " + message;
+	logEntry.type = LOG_INFO;
 
-	std::cout << "\x1B[32m" << output << "\033[0m" << std::endl;
+	logEntry.message = "LOG: [" + CurrentDateTimeAsString() + "]: " + message;
 
+
+	std::cout << "\x1B[32m" << logEntry.message << "\033[0m" << std::endl;
+
+	messages.push_back(logEntry);
 
 }
 
 void Logger::Error(const std::string& message)
 {
-	/* Red
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 4);
-	std::cerr << "ERROR:[" << CurrentDateTimeAsString() << "]: " << message << std::endl;*/
+	LogEntry logEntry;
 
-	std::string output = "ERROR: [" + CurrentDateTimeAsString() + "]: " + message;
-	std::cout << "\x1B[31m" << output << "\033[0m" << std::endl;
+	logEntry.type = LOG_ERROR;
+
+	logEntry.message = "ERROR: [" + CurrentDateTimeAsString() + "]: " + message;
+
+	std::cerr << "\x1B[31m" << logEntry.message << "\033[0m" << std::endl;
+
+	messages.push_back(logEntry);
 }
 
 void Logger::Warn(const std::string& message)
 {
-	std::string output = "WARNING: [" + CurrentDateTimeAsString() + "]: " + message;
+	LogEntry logEntry;
 
-	std::cout << "\x1B[33m" << output << "\033[0m" << std::endl;
+	logEntry.type = LOG_WARNING;
+
+	logEntry.message = "WARNING: [" + CurrentDateTimeAsString() + "]: " + message;
+
+	std::cout << "\x1B[33m" << logEntry.message << "\033[0m" << std::endl;
+
+	messages.push_back(logEntry);
 }
 
