@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
-#include "Logger.h"
+#include "src/Logger/Logger.h"
 #include <stdlib.h>
 
 Game::Game()
