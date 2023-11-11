@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Engine.h"
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 
 
-Game::Game()
+Engine::Engine()
 {
 	
 	spdlog::info("Engine Constructor Called.");
@@ -16,12 +16,12 @@ Game::Game()
 	isRunning = false;
 }
 
-Game::~Game()
+Engine::~Engine()
 {
 	spdlog::info("Engine Destructor Called.");
 }
 
-void Game::Init() {
+void Engine::Init() {
 
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING)) {
@@ -56,7 +56,7 @@ void Game::Init() {
 	isRunning = true;
 }
 
-void Game::Run() {
+void Engine::Run() {
 
 	Setup();
 	while (isRunning) {
@@ -66,7 +66,7 @@ void Game::Run() {
 	}
 }
 
-void Game::ProcessInput() {
+void Engine::ProcessInput() {
 
 	SDL_Event event;
 
@@ -89,16 +89,14 @@ void Game::ProcessInput() {
 
 }
 
-glm::vec2 playerPos;
-glm::vec2 playerVel;
 
-void Game::Setup() {
+
+void Engine::Setup() {
 	// Initialize game objects
-	playerPos = glm::vec2(10.0, 20.0);
-	playerVel = glm::vec2(10.0, 5.0);
+	
 
 }
-void Game::Update()
+void Engine::Update()
 {
 	// Getting the time to wait by subtracting the current time from the previous frame time.
 	int timeToWait = FRAME_TARGET_TIME - (SDL_GetTicks() - msPrevFrame);
@@ -117,22 +115,18 @@ void Game::Update()
 	 msPrevFrame = SDL_GetTicks();
 
 	// Updating game objects.
-	playerPos.x += playerVel.x * deltaTime;
-	playerPos.y += playerVel.y * deltaTime;
-	
+
 }
 
-void Game::Render() {
+void Engine::Render() {
 	// Set background color to red.
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 
 	// Clear the back buffer.
 	SDL_RenderClear(renderer);
 
-
 	// Load the PNG from our Assets folder.
 	SDL_Surface* surface = IMG_Load("assets/images/tank-tiger-right.png");
-	
 
 	// Error message will display if the image never loaded.
 	if (!surface) {
@@ -141,25 +135,11 @@ void Game::Render() {
 		return;
 	}
 
-	// Create a texture from the surface.
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-	// Free the surface since we are done with it.
-	SDL_FreeSurface(surface);
-
-	// Destination Recatangle where the texture will end up.
-	SDL_Rect dstRectangle = { static_cast<int>(playerPos.x),static_cast<int>(playerPos.y),32,32 };
-
-
-	// Draw the texture.
-	SDL_RenderCopy(renderer, texture, NULL, &dstRectangle);
-	SDL_DestroyTexture(texture);
-
 	// Show the back buffer.
 	SDL_RenderPresent(renderer);
 }
 
-void Game::Destroy() {
+void Engine::Destroy() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

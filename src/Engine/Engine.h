@@ -1,12 +1,11 @@
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <SDL.h>
 
 const int FPS = 60;
 const int FRAME_TARGET_TIME = 1000 / FPS;
 
-class Game
+class Engine
 {
 	private:
 		
@@ -17,8 +16,8 @@ class Game
 
 
 	public:
-		Game();
-		~Game();
+		Engine();
+		~Engine();
 		void Init();
 		void Run();
 		void ProcessInput();
@@ -31,4 +30,3 @@ class Game
 		int windowHeight;
 };
 
-#endif
