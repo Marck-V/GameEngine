@@ -3,26 +3,29 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
-#include "src/Logger/Logger.h"
+//#include "src/Logger/Logger.h"
 #include <stdlib.h>
+#include <spdlog/spdlog.h>
+
 
 Game::Game()
 {
 	
-	Logger::Log("Engine Constructor Called!");
+	spdlog::info("Engine Constructor Called.");
 	
 	isRunning = false;
 }
 
 Game::~Game()
 {
-	Logger::Log("Engine Destructor Called!");
+	spdlog::info("Engine Destructor Called.");
 }
 
 void Game::Init() {
+
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING)) {
-		Logger::Log("Error initializing SDL");
+		spdlog::error("Error initializing SDL.");
 		return;
 	}
 	
@@ -37,12 +40,13 @@ void Game::Init() {
 	window = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
 
 	if (!window) {
-		Logger::Error("Error creating SDL window");
+		spdlog::error("Error creating SDL window.");
 	}
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer) {
-		Logger::Error("Error creating SDL renderer");
+		spdlog::error("Error creating SDL renderer.");
 	}
+
 	// Setting the video mode to "real" fullscreen
 	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
@@ -126,13 +130,14 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 
 
-	// Loaded the PNG from our Assets folder.
+	// Load the PNG from our Assets folder.
 	SDL_Surface* surface = IMG_Load("assets/images/tank-tiger-right.png");
+	
 
-	// FIXME: Error message printing infinitely to the console.
 	// Error message will display if the image never loaded.
 	if (!surface) {
-		Logger::Error("Error loading image. Please Check file path.");
+		spdlog::error("Error loading image. Please check file path.");
+		isRunning = false;
 		return;
 	}
 
