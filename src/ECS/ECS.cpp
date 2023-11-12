@@ -42,3 +42,8 @@ Entity Manager::CreateEntity()
 
 	return entity;
 }
+
+void Manager::Update()
+{
+
+}

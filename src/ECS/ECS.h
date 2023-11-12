@@ -163,6 +163,8 @@ public:
 
 	Entity CreateEntity();
 	
+	void AddComponent<T>(Entity entity, T component);
+
 	void AddEntityToSystem(Entity entity, System* system);
 	
 
