@@ -170,3 +170,25 @@ public:
 
 	
 };
+
+// FIXME: AddComponent is not working
+template <typename T, typename... TArgs>
+void Manager::AddComponent(Entity, TArgs&& ... args) {
+	const auto componentID = Component<T>::GetID();
+
+	// If the component pool does not exist, create it.
+	if (componentPools.size() <= componentID) {
+		componentPools.resize(componentID + 1);
+	}
+
+	// If the component pool is empty, create it.
+	if (componentPools[componentID] == nullptr) {
+		componentPools[componentID] = new Pool<T>();
+	}
+
+	// Add the component to the pool.
+	static_cast<Pool<T>*>(componentPools[componentID])->Add(T(std::forward<TArgs>(args)...));
+
+	// Add the component to the entity signature.
+	entityComponentSignatures[entity.GetID()].set(componentID);
+})
