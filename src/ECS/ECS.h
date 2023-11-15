@@ -167,12 +167,9 @@ public:
 	// Component management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 
-	void AddEntityToSystem(Entity entity, System* system);
-	
+	template <typename TComponent> void RemoveComponent(Entity entity);
 
-	
-	template<typename T, typename ...TArgs>
-	void AddComponent(Entity, TArgs && ...args);
+	template <typename TComponent> bool HasComponent(Entity entity);
 
 };
 
@@ -205,3 +202,19 @@ void Manager::AddComponent(Entity, TArgs&& ... args) {
 
 	entityComponentSignatures[entityID].set(componentID);
 };
+
+template <typename TComponent>
+void Manager::RemoveComponent(Entity) {
+	const auto componentID = Component<TComponent>::GetID();
+	const auto entityID = entity.GetID();
+
+	entityComponentSignatures[entityID].set(componentID, false);
+};
+
+template <typename TComponent>
+bool Manager::HasComponent(Entity) {
+	const auto componentID = Component<TComponent>::GetID();
+	const auto entityID = entity.GetID();
+
+	return entityComponentSignatures[entityID].test(componentID);
+}
