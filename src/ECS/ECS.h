@@ -62,7 +62,7 @@ struct IComponent {
 };
 
 // Used to assign a unique IDS to each component type.
-template<typename T> 
+template<typename TComponent> 
 class Component : public IComponent{
 	// Returns the unique ID for the component type.
 	static int GetID(){
@@ -113,12 +113,12 @@ public:
 	}
 
 	void Add(T object) {
-		data.push_back(component);
+		data.push_back(object);
 	}
 
 
 	void Set(int entityID, T object) {
-		data[index] = component;
+		data[index] = object;
 	}
 
 	T& Get(int entityID) {
@@ -161,34 +161,47 @@ public:
 
 	void Update();
 
+	// Entity management
 	Entity CreateEntity();
 	
-	void AddComponent<T>(Entity entity, T component);
+	// Component management
+	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 
 	void AddEntityToSystem(Entity entity, System* system);
 	
 
 	
+	template<typename T, typename ...TArgs>
+	void AddComponent(Entity, TArgs && ...args);
+
 };
 
-// FIXME: AddComponent is not working
-template <typename T, typename... TArgs>
-void Manager::AddComponent(Entity, TArgs&& ... args) {
-	const auto componentID = Component<T>::GetID();
 
-	// If the component pool does not exist, create it.
-	if (componentPools.size() <= componentID) {
-		componentPools.resize(componentID + 1);
+template <typename TComponent, typename... TArgs>
+void Manager::AddComponent(Entity, TArgs&& ... args) {
+
+	const auto componentID = Component<TComponent>::GetID();
+	const auto entityID = entity.GetID();
+
+	// If you have a new component type, add it to the component pools by resizing the vector.
+	if(componentID >= componentPools.size()){
+		componentPools.resize(componentID + 1, nullptr);
 	}
 
 	// If the component pool is empty, create it.
-	if (componentPools[componentID] == nullptr) {
-		componentPools[componentID] = new Pool<T>();
+	if !(componentPools[componentID]) {
+		Pool<TComponent>* newComponentPool = new Pool<TComponent>();
 	}
 
-	// Add the component to the pool.
-	static_cast<Pool<T>*>(componentPools[componentID])->Add(T(std::forward<TArgs>(args)...));
+	Pool<TComponent>* componentPool = componentPools[componentID];
 
-	// Add the component to the entity signature.
-	entityComponentSignatures[entity.GetID()].set(componentID);
-})
+	if(entityID >= componentPool->GetSize()) {
+		componentPool->Resize(entityID + 1);
+	}
+
+	TComponent newComponent(std::forward<TArgs>(args)...);
+
+	componentPool->Set(entityID, newComponent);
+
+	entityComponentSignatures[entityID].set(componentID);
+};
