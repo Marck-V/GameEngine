@@ -1,6 +1,9 @@
 #include "ECS.h"
 #include <spdlog/spdlog.h>
 
+
+int IComponent::nextID = 0;
+
 int Entity::GetID() const
 {
 	return id;
