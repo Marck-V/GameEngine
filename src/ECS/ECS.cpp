@@ -46,6 +46,23 @@ Entity Manager::CreateEntity()
 	return entity;
 }
 
+void Manager::AddEntityToSystems(Entity entity) {
+	const auto entityID = entity.GetID();
+
+	const auto entityComponentSignature = entityComponentSignatures[entityID];
+	
+	// Loop all the systems
+	for (auto& system : systems) {
+		const auto& systemComponentSignature = system.second->GetComponentSignature();
+
+		// Check if the entity has the required components to be added to the system
+		bool isInterested = (entityComponentSignature & systemComponentSignature) == systemComponentSignature;
+
+		if (isInterested) {
+			system.second->AddEntity(entity);
+		}
+	}
+}
 void Manager::Update()
 {
 

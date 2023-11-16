@@ -171,6 +171,13 @@ public:
 
 	template <typename TComponent> bool HasComponent(Entity entity);
 
+	template <typename TSystem, typename ...TArgs> void AddSystem(TArgs&& ...args);
+	template <typename TSystem> void RemoveSystem();
+	template <typename TSystem> bool HasSystem() const;
+	template <typename TSystem> TSystem& GetSystem() const;
+
+	// Checks the component signarures of the entity and adds it to the systems that require the components that the entity has.
+	void AddEntityToSystems(Entity entity);
 };
 
 
@@ -217,4 +224,27 @@ bool Manager::HasComponent(Entity) {
 	const auto entityID = entity.GetID();
 
 	return entityComponentSignatures[entityID].test(componentID);
+};
+
+template <typename TSystem, typename ...TArgs> 
+void Manager::AddSystem(TArgs&& ...args) {
+	TSystem* newSystem = new TSystem(std::forward<TArgs>(args)...);
+	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
+};
+
+template <typename TSystem> 
+void Manager::RemoveSystem() {
+	auto system = systems.find(std::type_index(typeid(TSystem)));
+	systems.erase(system);
+}
+
+template <typename TSystem>
+bool Manager::HasSystem() const {
+	return system = systems.find(std::type_index(typeid(TSystem))) != systems.end();
+}
+
+template <typename TSystem> 
+TSystem& Manager::GetSystem() const {
+	auto system = systems.find(std::type_index(typeid(TSystem)));
+	return *(std::static_pointer_cast<TSystem>(system->second));
 }
