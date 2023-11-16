@@ -41,6 +41,11 @@ Entity Manager::CreateEntity()
 	Entity entity(entityID);
 	entitiesToCreate.insert(entity);
 
+	// Check that the signature vector has enough space for the new entity
+	if (entityID >= entityComponentSignatures.size()) {
+		entityComponentSignatures.resize(entityID + 1);
+	}
+
 	spdlog::info("Entity created with ID: {0}", entityID);
 
 	return entity;
@@ -65,5 +70,11 @@ void Manager::AddEntityToSystems(Entity entity) {
 }
 void Manager::Update()
 {
+	// Add entities that are waiting to be created to the active systems
+	for (auto entity : entitiesToCreate) {
+		AddEntityToSystems(entity);
+	}
+
+	entitiesToCreate.clear();
 
 }

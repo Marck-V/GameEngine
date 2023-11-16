@@ -14,6 +14,8 @@ Engine::Engine()
 	spdlog::info("Engine Constructor Called.");
 	
 	isRunning = false;
+
+	manager = new Manager();
 }
 
 Engine::~Engine()
@@ -92,7 +94,11 @@ void Engine::ProcessInput() {
 
 
 void Engine::Setup() {
-	// Initialize game objects
+	// Creatre the entities
+
+	Entity tank = manager->CreateEntity();
+	Entity wall = manager->CreateEntity();
+
 	
 
 }

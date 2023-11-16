@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <memory>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -32,7 +33,9 @@ public:
 		bool operator==(const Entity& other) const {
 			return id == other.id;
 		}
-		
+		bool operator !=(const Entity& other) const { return id != other.id; }
+		bool operator >(const Entity& other) const { return id > other.id; }
+		bool operator <(const Entity& other) const { return id < other.id; }
 };
 
 class System {
@@ -117,11 +120,12 @@ public:
 	}
 
 
-	void Set(int entityID, T object) {
+	void Set(int index, T object) {
 		data[index] = object;
 	}
 
-	T& Get(int entityID) {
+	T& Get(int index) {
+		
 		return static_cast<T&>(data[index]);
 	}
 
@@ -182,7 +186,7 @@ public:
 
 
 template <typename TComponent, typename... TArgs>
-void Manager::AddComponent(Entity, TArgs&& ... args) {
+void Manager::AddComponent(Entity entity, TArgs&& ... args) {
 
 	const auto componentID = Component<TComponent>::GetID();
 	const auto entityID = entity.GetID();
@@ -193,7 +197,7 @@ void Manager::AddComponent(Entity, TArgs&& ... args) {
 	}
 
 	// If the component pool is empty, create it.
-	if !(componentPools[componentID]) {
+	if (!componentPools[componentID]) {
 		Pool<TComponent>* newComponentPool = new Pool<TComponent>();
 	}
 
@@ -211,7 +215,7 @@ void Manager::AddComponent(Entity, TArgs&& ... args) {
 };
 
 template <typename TComponent>
-void Manager::RemoveComponent(Entity) {
+void Manager::RemoveComponent(Entity entity) {
 	const auto componentID = Component<TComponent>::GetID();
 	const auto entityID = entity.GetID();
 
@@ -219,7 +223,7 @@ void Manager::RemoveComponent(Entity) {
 };
 
 template <typename TComponent>
-bool Manager::HasComponent(Entity) {
+bool Manager::HasComponent(Entity entity) {
 	const auto componentID = Component<TComponent>::GetID();
 	const auto entityID = entity.GetID();
 
@@ -246,5 +250,8 @@ bool Manager::HasSystem() const {
 template <typename TSystem> 
 TSystem& Manager::GetSystem() const {
 	auto system = systems.find(std::type_index(typeid(TSystem)));
+	
 	return *(std::static_pointer_cast<TSystem>(system->second));
+
+	
 }

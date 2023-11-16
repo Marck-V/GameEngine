@@ -2,6 +2,8 @@
 
 #include <SDL.h>
 
+#include <../src/ECS/ECS.h>
+
 const int FPS = 60;
 const int FRAME_TARGET_TIME = 1000 / FPS;
 
@@ -14,6 +16,7 @@ class Engine
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 
+		Manager* manager;
 
 	public:
 		Engine();
