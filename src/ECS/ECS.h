@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <set>
 #include <memory>
+#include <spdlog/spdlog.h>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -67,6 +68,7 @@ struct IComponent {
 // Used to assign a unique IDS to each component type.
 template<typename TComponent> 
 class Component : public IComponent{
+public:
 	// Returns the unique ID for the component type.
 	static int GetID(){
 		static auto id = nextID++;
@@ -213,6 +215,8 @@ void Manager::AddComponent(Entity entity, TArgs&& ... args) {
 	componentPool->Set(entityID, newComponent);
 
 	entityComponentSignatures[entityID].set(componentID);
+
+	spdlog::info("Component ID: " + std::to_string(componentID)+ " was added to entity ID: " + std::to_string(entityID));
 };
 
 template <typename TComponent>

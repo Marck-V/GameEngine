@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
+#include <../src/Components/TransformComponent.h>
+#include <../src/Components/RigidBodyComponent.h>
 //#include "src/Logger/Logger.h"
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
@@ -99,8 +101,9 @@ void Engine::Setup() {
 	Entity tank = manager->CreateEntity();
 	Entity wall = manager->CreateEntity();
 
-	
-
+	// Add components to the entities
+	manager->AddComponent<TransformComponent>(tank, glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
+	manager->AddComponent<RigidBodyComponent>(tank, glm::vec2(50.0, 0.0));
 }
 void Engine::Update()
 {
