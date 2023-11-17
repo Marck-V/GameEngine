@@ -15,7 +15,7 @@ Engine::Engine()
 	
 	isRunning = false;
 
-	manager = new Manager();
+	manager = std::make_unique<Manager>(); // Creating a new instance of the manager class.
 }
 
 Engine::~Engine()

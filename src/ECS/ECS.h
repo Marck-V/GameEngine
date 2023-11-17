@@ -144,14 +144,14 @@ private:
 	// A vector of componenet pools. Each pool is going to comntain the components of a specific type.
 	// The index of the pool in the vector is going to be the ID of the component type.
 	// This way we can access the pool of a specific component type by using the ID of the component type.
-	std::vector<IPool*> componentPools;
+	std::vector<std::shared_ptr<IPool>> componentPools;
 
 	// A vector of signatures. Each signature is going to represent the component types that an entity has.
 	// The index of the signature in the vector is going to be the ID of the entity.
 	std::vector<Signature> entityComponentSignatures;
 
 	// An unordered map of systems.
-	std::unordered_map<std::type_index, System*> systems;
+	std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
 	// Set of entities that are going to be added or destroyed at the end of the frame.
 	std::set<Entity> entitiesToDestroy;
@@ -198,11 +198,12 @@ void Manager::AddComponent(Entity entity, TArgs&& ... args) {
 
 	// If the component pool is empty, create it.
 	if (!componentPools[componentID]) {
-		Pool<TComponent>* newComponentPool = new Pool<TComponent>();
+		std::shared_ptr<Pool<TComponent>> newComponentPool = std::make_shared<Pool<TComponent>>();
+		componentPools[componentID] = newComponentPool;
 	}
 
-	Pool<TComponent>* componentPool = componentPools[componentID];
-
+	std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+	
 	if(entityID >= componentPool->GetSize()) {
 		componentPool->Resize(entityID + 1);
 	}
@@ -232,7 +233,7 @@ bool Manager::HasComponent(Entity entity) {
 
 template <typename TSystem, typename ...TArgs> 
 void Manager::AddSystem(TArgs&& ...args) {
-	TSystem* newSystem = new TSystem(std::forward<TArgs>(args)...);
+	std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
 	systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 };
 

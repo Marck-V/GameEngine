@@ -16,7 +16,7 @@ class Engine
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 
-		Manager* manager;
+		std::unique_ptr<Manager> manager; // Unique pointer to the manager class.
 
 	public:
 		Engine();
