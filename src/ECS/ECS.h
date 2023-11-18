@@ -18,6 +18,8 @@ class ECS
 
 };
 
+class Manager;
+
 class Entity {
 
 private:
@@ -31,12 +33,18 @@ public:
 
 		Entity& operator=(const Entity& other) = default;
 			
-		bool operator==(const Entity& other) const {
-			return id == other.id;
-		}
+		bool operator==(const Entity& other) const { return id == other.id; }
 		bool operator !=(const Entity& other) const { return id != other.id; }
 		bool operator >(const Entity& other) const { return id > other.id; }
 		bool operator <(const Entity& other) const { return id < other.id; }
+
+		template <typename TComponent, typename ...TArgs> void AddComponent(TArgs&& ...args);
+		template <typename TComponent> void RemoveComponent();
+		template <typename TComponent> bool HasComponent();
+		template <typename TComponent> TComponent& GetComponent() const;
+
+		// Hold a pointer to the entity's owner manager.
+		Manager* manager;
 };
 
 class System {
@@ -172,10 +180,9 @@ public:
 	
 	// Component management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
-
 	template <typename TComponent> void RemoveComponent(Entity entity);
-
 	template <typename TComponent> bool HasComponent(Entity entity);
+	template <typename TComponent> TComponent& GetComponent(Entity entity) const;
 
 	template <typename TSystem, typename ...TArgs> void AddSystem(TArgs&& ...args);
 	template <typename TSystem> void RemoveSystem();
@@ -225,6 +232,8 @@ void Manager::RemoveComponent(Entity entity) {
 	const auto entityID = entity.GetID();
 
 	entityComponentSignatures[entityID].set(componentID, false);
+
+	spdlog::info("Component ID: " + std::to_string(componentID) + " was removed from entity ID: " + std::to_string(entityID));
 };
 
 template <typename TComponent>
@@ -233,6 +242,36 @@ bool Manager::HasComponent(Entity entity) {
 	const auto entityID = entity.GetID();
 
 	return entityComponentSignatures[entityID].test(componentID);
+};
+
+template <typename TComponent>
+TComponent& Manager::GetComponent(Entity entity) const {
+	const auto componentID = Component<TComponent>::GetID();
+	const auto entityID = entity.GetID();
+
+	auto componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentID]);
+
+	return componentPool->Get(entityID);
+}
+
+template <typename TComponent, typename ...TArgs>
+void Entity::AddComponent(TArgs&& ...args) {
+	manager->AddComponent<TComponent>(*this, std::forward<TArgs>(args)...);
+};
+
+template <typename TComponent>
+void Entity::RemoveComponent() {
+	manager->RemoveComponent<TComponent>(*this);
+};
+
+template <typename TComponent>
+bool Entity::HasComponent() {
+	return manager->HasComponent<TComponent>(*this);
+};
+
+template <typename TComponent>
+TComponent& Entity::GetComponent() const {
+	return manager->GetComponent<TComponent>(*this);
 };
 
 template <typename TSystem, typename ...TArgs> 

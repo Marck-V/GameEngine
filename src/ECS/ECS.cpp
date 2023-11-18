@@ -39,6 +39,7 @@ Entity Manager::CreateEntity()
 	entityID = numEntities++;
 
 	Entity entity(entityID);
+	entity.manager = this;
 	entitiesToCreate.insert(entity);
 
 	// Check that the signature vector has enough space for the new entity

@@ -93,18 +93,19 @@ void Engine::ProcessInput() {
 
 }
 
-
-
 void Engine::Setup() {
 	// Creatre the entities
-
 	Entity tank = manager->CreateEntity();
 	Entity wall = manager->CreateEntity();
 
 	// Add components to the entities
-	manager->AddComponent<TransformComponent>(tank, glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
-	manager->AddComponent<RigidBodyComponent>(tank, glm::vec2(50.0, 0.0));
+	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
+
+	// Remove a component from the entity
+	tank.RemoveComponent<TransformComponent>();
 }
+
 void Engine::Update()
 {
 	// Getting the time to wait by subtracting the current time from the previous frame time.
