@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include "../src/Components/Components.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
 
@@ -95,14 +96,15 @@ void Engine::Setup() {
 
 	// Add the systems that need to be processed in our game.
 	manager->AddSystem<MovementSystem>();
+	manager->AddSystem<RenderSystem>();
 
 	// Create the entities
 	Entity tank = manager->CreateEntity();
-	Entity wall = manager->CreateEntity();
 
 	// Add components to the entities
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 50.0));
+	tank.AddComponent<SpriteComponent>(10,10);
 
 }
 
@@ -123,31 +125,26 @@ void Engine::Update()
 
 	// Store the current frame time.
 	 msPrevFrame = SDL_GetTicks();
+	 
+	// Invoke all the systems in the manager.
+	manager->Update();
 
 	// Updating game objects.
 	manager->GetSystem<MovementSystem>().Update(deltaTime);
 
-	// Update the registry to process the entities that are waiting to be created or destroyed.
-	manager->Update();
 }
 
 void Engine::Render() {
 	// Set background color to red.
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
+	SDL_RenderClear(renderer);
+
+	// Invoking the systems needed to render the game.
+	manager->GetSystem<RenderSystem>().Update(renderer);
 
 	// Clear the back buffer.
 	SDL_RenderClear(renderer);
-
-	// Load the PNG from our Assets folder.
-	SDL_Surface* surface = IMG_Load("assets/images/tank-tiger-right.png");
-
-	// Error message will display if the image never loaded.
-	if (!surface) {
-		spdlog::error("Error loading image. Please check file path.");
-		isRunning = false;
-		return;
-	}
-
+	
 	// Show the back buffer.
 	SDL_RenderPresent(renderer);
 }
