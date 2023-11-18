@@ -296,6 +296,4 @@ TSystem& Manager::GetSystem() const {
 	auto system = systems.find(std::type_index(typeid(TSystem)));
 	
 	return *(std::static_pointer_cast<TSystem>(system->second));
-
-	
 }

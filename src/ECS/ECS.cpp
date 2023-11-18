@@ -78,4 +78,5 @@ void Manager::Update()
 
 	entitiesToCreate.clear();
 
+	// TODO: Remove the entities that are waiting to be destroyed from the active systems.
 }

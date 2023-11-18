@@ -3,12 +3,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
-#include <../src/Components/TransformComponent.h>
-#include <../src/Components/RigidBodyComponent.h>
-//#include "src/Logger/Logger.h"
+#include "../src/Components/Components.h"
+#include "../Systems/MovementSystem.h"
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
-
 
 Engine::Engine()
 {
@@ -94,16 +92,18 @@ void Engine::ProcessInput() {
 }
 
 void Engine::Setup() {
-	// Creatre the entities
+
+	// Add the systems that need to be processed in our game.
+	manager->AddSystem<MovementSystem>();
+
+	// Create the entities
 	Entity tank = manager->CreateEntity();
 	Entity wall = manager->CreateEntity();
 
 	// Add components to the entities
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 50.0));
 
-	// Remove a component from the entity
-	tank.RemoveComponent<TransformComponent>();
 }
 
 void Engine::Update()
@@ -125,7 +125,10 @@ void Engine::Update()
 	 msPrevFrame = SDL_GetTicks();
 
 	// Updating game objects.
+	manager->GetSystem<MovementSystem>().Update(deltaTime);
 
+	// Update the registry to process the entities that are waiting to be created or destroyed.
+	manager->Update();
 }
 
 void Engine::Render() {
