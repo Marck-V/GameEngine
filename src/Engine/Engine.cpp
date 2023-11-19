@@ -8,6 +8,7 @@
 #include "../Systems/RenderSystem.h"
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
+#include <fstream>
 
 Engine::Engine()
 {	
@@ -35,8 +36,8 @@ void Engine::Init() {
 	// Get the current display mode and resolution of the first display.
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	windowWidth = 800;
-	windowHeight = 600;
+	windowWidth = 1280;
+	windowHeight = 720;
 	
 	window = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
 
@@ -90,7 +91,7 @@ void Engine::ProcessInput() {
 
 }
 
-void Engine::Setup() {
+void Engine::LoadLevel(int level){
 
 	// Add the systems that need to be processed in our game.
 	manager->AddSystem<MovementSystem>();
@@ -99,6 +100,44 @@ void Engine::Setup() {
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
 	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
+	assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
+
+	// TODO: See if this can be improved by using a 2D array.
+	 
+	// Load the tilemap
+	int tileSize = 32;
+	double tileScale = 2.0;
+	int mapNumColumns = 25;
+	int mapNumRows = 20;
+
+	std::fstream mapFile;
+	mapFile.open("assets/tilemaps/jungle.map");
+	
+	// Loop through the map file and create the tiles.
+	for (int row = 0; row < 20; row++) {
+		for (int column = 0; column < 25; column++) {
+
+			char ch;
+
+			// Read the next character from the file.
+			mapFile.get(ch);
+
+			// Convert the char to an int and multiply it by the tile size.
+			int srcRectY = std::atoi(&ch) * tileSize;
+			mapFile.get(ch);
+			int srcRectX = std::atoi(&ch) * tileSize;
+
+			// Ignore the comma and the space.
+			mapFile.ignore();
+
+			// Create an entity for each tile.
+			Entity tile = manager->CreateEntity();
+			tile.AddComponent<TransformComponent>(glm::vec2(column * (tileSize * tileScale), row * (tileSize * tileScale)), glm::vec2(tileScale, tileScale), 0.0);
+			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, srcRectX, srcRectY);
+
+		}
+	}
+	
 
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
@@ -113,7 +152,11 @@ void Engine::Setup() {
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0, 50.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
 
+}
 
+
+void Engine::Setup() {
+	LoadLevel(1);
 }
 
 void Engine::Update()

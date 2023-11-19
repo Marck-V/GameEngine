@@ -5,6 +5,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "../AssetManager/AssetManager.h"
+#include <fstream>
+
 
 class RenderSystem : public System {
 
@@ -13,6 +15,7 @@ public:
 		RequireComponent<TransformComponent>();
 		RequireComponent<SpriteComponent>();
 	}
+
 
 	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetStore) {
 		for (auto entity : GetSystemEntities()) {
@@ -29,5 +32,7 @@ public:
 			SDL_RenderCopyEx(renderer, assetStore->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
 		}
 	}
+
+	// jungle.map is 20 x 25 tiles
 	
 };

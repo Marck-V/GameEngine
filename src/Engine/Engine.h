@@ -26,10 +26,11 @@ class Engine
 		void Init();
 		void Run();
 		void ProcessInput();
+		void LoadLevel(int level);
 		void Update();
 		void Render();
 		void Destroy();
-		void Setup();
+		void Setup(); 
 
 		int windowWidth;
 		int windowHeight;
