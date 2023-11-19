@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <SDL.h>
 
 struct RigidBodyComponent {
 	glm::vec2 velocity;
@@ -23,12 +24,16 @@ struct TransformComponent {
 };
 
 struct SpriteComponent {
+	std::string assetID;
 	int width;
 	int height;
+	SDL_Rect srcRect;
 
-	SpriteComponent(int width = 0, int height = 0) {
+	SpriteComponent(std::string assetID = "", int width = 0, int height = 0, int srcRectX = 0, int srcRectY = 0) {
+		this->assetID = assetID;
 		this->width = width;
 		this->height = height;
+		this->srcRect = { srcRectX, srcRectY, width, height };
 	}
 
 };

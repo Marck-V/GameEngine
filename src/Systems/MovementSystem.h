@@ -25,7 +25,7 @@ class MovementSystem : public System {
 				transform.position.x += rigidbody.velocity.x * deltaTime;
 				transform.position.y += rigidbody.velocity.y * deltaTime;
 
-				spdlog::info("Entity ID: {0}, Position: {1}, {2}", entity.GetID(), transform.position.x, transform.position.y);
+				//spdlog::info("Entity ID: {0}, Position: {1}, {2}", entity.GetID(), transform.position.x, transform.position.y);
 			}
 		}
 
