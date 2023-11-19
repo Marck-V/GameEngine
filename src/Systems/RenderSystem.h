@@ -26,5 +26,5 @@ public:
 			SDL_RenderFillRect(renderer, &objRect);
 		}
 	}
-	void Render();
+	
 };

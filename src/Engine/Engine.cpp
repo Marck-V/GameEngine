@@ -102,9 +102,15 @@ void Engine::Setup() {
 	Entity tank = manager->CreateEntity();
 
 	// Add components to the entities
-	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(0.5, 0.5), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 50.0));
 	tank.AddComponent<SpriteComponent>(10,10);
+
+	Entity truck = manager->CreateEntity();
+	truck.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(0.5, 0.5), 0.0);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0, 50.0));
+	truck.AddComponent<SpriteComponent>(30, 30);
+
 
 }
 
@@ -137,13 +143,12 @@ void Engine::Update()
 void Engine::Render() {
 	// Set background color to red.
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
+
+	// Clear the back buffer.
 	SDL_RenderClear(renderer);
 
 	// Invoking the systems needed to render the game.
 	manager->GetSystem<RenderSystem>().Update(renderer);
-
-	// Clear the back buffer.
-	SDL_RenderClear(renderer);
 	
 	// Show the back buffer.
 	SDL_RenderPresent(renderer);
