@@ -5,7 +5,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "../AssetManager/AssetManager.h"
-#include <fstream>
 
 
 class RenderSystem : public System {
@@ -17,8 +16,17 @@ public:
 	}
 
 
-	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetStore) {
+	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager) {
+		// TODO: Sort all the entities of our system by the z-index.
+
+		std::vector<Entity> sortedEntities = GetSystemEntities();
+
+		// Sort by the Z-index.
+		std::sort(sortedEntities.begin(), sortedEntities.end(), [](Entity& a, Entity& b) { return a.GetComponent<SpriteComponent>().zIndex < b.GetComponent<SpriteComponent>().zIndex; });
+		
+		// Loop through all entities that the system is interested in
 		for (auto entity : GetSystemEntities()) {
+			
 			const auto transform = entity.GetComponent<TransformComponent>();
 			const auto sprite = entity.GetComponent<SpriteComponent>();
 
@@ -29,10 +37,7 @@ public:
 			SDL_Rect dstRect = { static_cast<int>(transform.position.x), static_cast<int>(transform.position.y), static_cast<int>(sprite.width * transform.scale.x), static_cast<int>(sprite.height * transform.scale.y) };
 
 			// This version of SDL_RenderCopy allows us to flip the sprite and rotate it. We are using this since we have a rotation variable in our transform component.
-			SDL_RenderCopyEx(renderer, assetStore->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
 		}
 	}
-
-	// jungle.map is 20 x 25 tiles
-	
 };

@@ -113,19 +113,25 @@ void Engine::LoadLevel(int level){
 	std::fstream mapFile;
 	mapFile.open("assets/tilemaps/jungle.map");
 	
+	// Check if the file is open.
+	if (!mapFile.is_open()) {
+		spdlog::error("Error opening the map file. Please check file path.");
+		return;
+	}
+	
 	// Loop through the map file and create the tiles.
 	for (int row = 0; row < 20; row++) {
 		for (int column = 0; column < 25; column++) {
 
-			char ch;
+			char ch[2] = { 0, 0 };
 
 			// Read the next character from the file.
-			mapFile.get(ch);
+			mapFile.get(ch[0]);
 
 			// Convert the char to an int and multiply it by the tile size.
-			int srcRectY = std::atoi(&ch) * tileSize;
-			mapFile.get(ch);
-			int srcRectX = std::atoi(&ch) * tileSize;
+			int srcRectY = std::atoi(&ch[0]) * tileSize;
+			mapFile.get(ch[0]);
+			int srcRectX = std::atoi(&ch[0]) * tileSize;
 
 			// Ignore the comma and the space.
 			mapFile.ignore();
@@ -133,7 +139,7 @@ void Engine::LoadLevel(int level){
 			// Create an entity for each tile.
 			Entity tile = manager->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(column * (tileSize * tileScale), row * (tileSize * tileScale)), glm::vec2(tileScale, tileScale), 0.0);
-			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, srcRectX, srcRectY);
+			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, 0, srcRectX, srcRectY);
 
 		}
 	}
@@ -143,20 +149,22 @@ void Engine::LoadLevel(int level){
 	Entity tank = manager->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 
 	// TODO: Add an error message that pops up if the file is not found.
 
 	Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0, 50.0));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
-
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+	std::cout << "Z-Index: " << truck.GetComponent<SpriteComponent>().zIndex << std::endl;
+	
 }
 
 
 void Engine::Setup() {
 	LoadLevel(1);
+	
 }
 
 void Engine::Update()
