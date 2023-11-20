@@ -6,6 +6,7 @@
 #include "../src/Components/Components.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
+#include "../Systems/AnimationSystem.h"
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
 #include <fstream>
@@ -96,12 +97,14 @@ void Engine::LoadLevel(int level){
 	// Add the systems that need to be processed in our game.
 	manager->AddSystem<MovementSystem>();
 	manager->AddSystem<RenderSystem>();
+	manager->AddSystem<AnimationSystem>();
 
 	// Adding the textures to the asset container.
-	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
-	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
+	/*assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
+	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");*/
 	assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
-
+	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper.png");
+	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
 	// TODO: See if this can be improved by using a 2D array.
 	 
 	// Load the tilemap
@@ -146,18 +149,29 @@ void Engine::LoadLevel(int level){
 	
 
 	// Creating the entities.
-	Entity tank = manager->CreateEntity();
+	/*Entity tank = manager->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);*/
 
-	// TODO: Add an error message that pops up if the file is not found.
+	Entity chopper = manager->CreateEntity();
+	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2);
+	chopper.AddComponent<AnimationComponent>(2, 10, true);
 
-	Entity truck = manager->CreateEntity();
+	Entity radar = manager->CreateEntity();
+	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
+	radar.AddComponent<AnimationComponent>(8, 5, true);
+
+
+	/*Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(20, 0.0));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
-	
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);*/
+
+	// TODO: Add an error message that pops up if the file is not found.
 }
 
 
@@ -200,7 +214,8 @@ void Engine::Render() {
 
 	// Invoking the systems needed to render the game.
 	manager->GetSystem<RenderSystem>().Update(renderer, assetManager);
-	
+	manager->GetSystem<AnimationSystem>().Update();
+
 	// Show the back buffer.
 	SDL_RenderPresent(renderer);
 }

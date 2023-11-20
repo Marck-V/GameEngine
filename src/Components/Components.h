@@ -41,3 +41,19 @@ struct SpriteComponent {
 	}
 
 };
+
+struct AnimationComponent {
+	int numFrames;
+	int currentFrame;
+	int frameRateSpeed;
+	bool isLoop;
+	int startTime;
+
+	AnimationComponent(int numFrames = 1, int frameRateSpeed = 1, bool isLoop = true) {
+		this->numFrames = numFrames;
+		this->currentFrame = currentFrame;
+		this->frameRateSpeed = frameRateSpeed;
+		this->isLoop = isLoop;
+		this->startTime = SDL_GetTicks();
+	}
+};

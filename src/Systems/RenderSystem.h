@@ -17,7 +17,6 @@ public:
 
 
 	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager) {
-		// TODO: Sort all the entities of our system by the z-index.
 
 		std::vector<Entity> sortedEntities = GetSystemEntities();
 
