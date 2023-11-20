@@ -25,7 +25,7 @@ public:
 		std::sort(sortedEntities.begin(), sortedEntities.end(), [](Entity& a, Entity& b) { return a.GetComponent<SpriteComponent>().zIndex < b.GetComponent<SpriteComponent>().zIndex; });
 		
 		// Loop through all entities that the system is interested in
-		for (auto entity : GetSystemEntities()) {
+		for (auto entity : sortedEntities) {
 			
 			const auto transform = entity.GetComponent<TransformComponent>();
 			const auto sprite = entity.GetComponent<SpriteComponent>();

@@ -147,24 +147,22 @@ void Engine::LoadLevel(int level){
 
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 30.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(50.0, 0));
+	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 
 	// TODO: Add an error message that pops up if the file is not found.
 
 	Entity truck = manager->CreateEntity();
-	truck.AddComponent<TransformComponent>(glm::vec2(100.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(0, 50.0));
+	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(20, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
-	std::cout << "Z-Index: " << truck.GetComponent<SpriteComponent>().zIndex << std::endl;
 	
 }
 
 
 void Engine::Setup() {
 	LoadLevel(1);
-	
 }
 
 void Engine::Update()
