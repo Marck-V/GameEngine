@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <spdlog/spdlog.h>
 #include <fstream>
+#include "../Systems/CollisionSystem.h"
 
 Engine::Engine()
 {	
@@ -98,10 +99,11 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<MovementSystem>();
 	manager->AddSystem<RenderSystem>();
 	manager->AddSystem<AnimationSystem>();
+	manager->AddSystem<CollisionSystem>();
 
 	// Adding the textures to the asset container.
-	/*assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
-	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");*/
+	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
+	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
 	assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
 	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper.png");
 	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
@@ -149,13 +151,14 @@ void Engine::LoadLevel(int level){
 	
 
 	// Creating the entities.
-	/*Entity tank = manager->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);*/
+	Entity tank = manager->CreateEntity();
+	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0));
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+	tank.AddComponent<BoxColliderComponent>(32, 32);
 
 	Entity chopper = manager->CreateEntity();
-	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
@@ -166,10 +169,11 @@ void Engine::LoadLevel(int level){
 	radar.AddComponent<AnimationComponent>(8, 5, true);
 
 
-	/*Entity truck = manager->CreateEntity();
+	Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(20, 0.0));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);*/
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+	truck.AddComponent<BoxColliderComponent>(32, 32);
 
 	// TODO: Add an error message that pops up if the file is not found.
 }

@@ -37,6 +37,7 @@ public:
 
 			// This version of SDL_RenderCopy allows us to flip the sprite and rotate it. We are using this since we have a rotation variable in our transform component.
 			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
+			
 		}
 	}
 };
