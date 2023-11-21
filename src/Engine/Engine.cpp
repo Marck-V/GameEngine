@@ -153,13 +153,13 @@ void Engine::LoadLevel(int level){
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(-30.0, 0));
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(-50.0, 0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
 
 	Entity chopper = manager->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
 
@@ -171,7 +171,7 @@ void Engine::LoadLevel(int level){
 
 	Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(20, 0.0));
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(50, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
 
@@ -206,6 +206,7 @@ void Engine::Update()
 
 	// Updating game objects.
 	manager->GetSystem<MovementSystem>().Update(deltaTime);
+	manager->GetSystem<CollisionSystem>().Update();
 
 }
 
