@@ -33,7 +33,7 @@ class CollisionSystem : public System {
 					auto e2Collider = entity2.GetComponent<BoxColliderComponent>();
 
 					// Perform AABB collision detection.
-					bool collisionDetected = CheckAABBCollision(e1Transform.position.x, e1Transform.position.y, e1Collider.width, e1Collider.height, e2Transform.position.x, e2Transform.position.y, e2Collider.width, e2Collider.height);
+					bool collisionDetected = CheckAABBCollision(e1Transform.position.x + e1Collider.offset.x, e1Transform.position.y + e1Collider.offset.y, e1Collider.width, e1Collider.height, e2Transform.position.x + e2Collider.offset.x, e2Transform.position.y + e2Collider.offset.y, e2Collider.width, e2Collider.height);
 					
 					if (collisionDetected) {
 						// Write a log message showing what entity id collided with each other using spdlog.

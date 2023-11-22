@@ -129,6 +129,7 @@
       <AdditionalIncludeDirectories>C:\Users\M\source\repos\GameEngine\GameEngine;C:\Users\M\Documents\Libraries\SDL2-2.28.3\include;C:\Users\M\Documents\Libraries\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/sdl /w34996 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +149,7 @@
       <AdditionalIncludeDirectories>C:\Users\M\source\repos\GameEngine\GameEngine;C:\Users\M\Documents\Libraries\SDL2-2.28.3\include;C:\Users\M\Documents\Libraries\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/sdl /w34996 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

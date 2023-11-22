@@ -12,7 +12,6 @@ const unsigned int MAX_COMPONENTS = 32;
 
 typedef std::bitset<MAX_COMPONENTS> Signature;
 
-
 class ECS
 {
 
@@ -192,7 +191,6 @@ public:
 	// Checks the component signarures of the entity and adds it to the systems that require the components that the entity has.
 	void AddEntityToSystems(Entity entity);
 };
-
 
 template <typename TComponent, typename... TArgs>
 void Manager::AddComponent(Entity entity, TArgs&& ... args) {
