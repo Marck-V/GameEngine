@@ -11,10 +11,12 @@
 #include <spdlog/spdlog.h>
 #include <fstream>
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/RenderCollisionSystem.h"
 
 Engine::Engine()
 {	
 	isRunning = false;
+	isDebugMode = false;
 	manager = std::make_unique<Manager>(); // Creating a new instance of the manager class.
 	assetManager = std::make_unique<AssetManager>(); // Creating a new instance of the asset container class.
 	spdlog::info("Engine Constructor Called.");
@@ -87,6 +89,9 @@ void Engine::ProcessInput() {
 				if (event.key.keysym.sym == SDLK_ESCAPE) {
 					isRunning = false;
 				}
+				if (event.key.keysym.sym == SDLK_w) {
+					isDebugMode = !isDebugMode;
+				}
 				break;
 		}
 	}
@@ -100,6 +105,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<RenderSystem>();
 	manager->AddSystem<AnimationSystem>();
 	manager->AddSystem<CollisionSystem>();
+	manager->AddSystem<RenderCollisionSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
@@ -220,6 +226,11 @@ void Engine::Render() {
 	// Invoking the systems needed to render the game.
 	manager->GetSystem<RenderSystem>().Update(renderer, assetManager);
 	manager->GetSystem<AnimationSystem>().Update();
+
+	// If debug mode is set to true, then the collision shapes will be rendered.
+	if (isDebugMode) {
+		manager->GetSystem<RenderCollisionSystem>().Update(renderer);
+	}
 
 	// Show the back buffer.
 	SDL_RenderPresent(renderer);

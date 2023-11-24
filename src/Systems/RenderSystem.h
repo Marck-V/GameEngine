@@ -38,11 +38,6 @@ public:
 			// This version of SDL_RenderCopy allows us to flip the sprite and rotate it. We are using this since we have a rotation variable in our transform component.
 			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
 			
-			if(entity.HasComponent<BoxColliderComponent>()) {
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-				SDL_RenderDrawRect(renderer, &dstRect);
-			}
-			
 		}
 	}
 };

@@ -13,6 +13,7 @@ class Engine
 	private:
 		
 		bool isRunning;
+		bool isDebugMode;
 		int msPrevFrame = 0;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
