@@ -20,6 +20,7 @@ class Engine
 
 		std::unique_ptr<Manager> manager; // Unique pointer to the manager class.
 		std::unique_ptr<AssetManager> assetManager; // Unique pointer to the asset container class.
+		std::unique_ptr<EventBus> eventBus; // Unique pointer to the event bus class.
 
 	public:
 		Engine();
