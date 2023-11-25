@@ -2,7 +2,8 @@
 
 #include "../ECS/ECS.h"
 #include "../Components/Components.h"
-
+#include "../src/EventBus/EventBus.h"
+#include "../src/Events/Events.h"
 
 class CollisionSystem : public System {
 	public:
@@ -11,7 +12,7 @@ class CollisionSystem : public System {
 		RequireComponent<BoxColliderComponent>();
 	}
 
-		void Update() {
+		void Update(std::unique_ptr<EventBus>& eventBus) {
 			auto entities = GetSystemEntities();
 
 			// Looping through both entities and checking if they are colliding.
@@ -39,7 +40,8 @@ class CollisionSystem : public System {
 						// Write a log message showing what entity id collided with each other using spdlog.
 						spdlog::info("Entity ID: {} collided with Entity ID: {}", entity1.GetID(), entity2.GetID());
 						
-						// TODO: Emit a collision event.
+						// Emit a collision event.
+						eventBus->EmitEvent<CollisionEvent>(entity1, entity2);
 					}
 
 				}

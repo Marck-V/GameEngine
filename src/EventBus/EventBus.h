@@ -1,10 +1,11 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
+#include "../src/EventBus/Event.h"
 #include <map>
 #include <typeindex>
-#include "../src/EventBus/Event.h"
-
+#include <functional>
+#include <list>
 
 
 class IEventCallback {
@@ -15,30 +16,29 @@ public:
 		Call(e);
 	}
 private:
-	virtual void Call(Event e) = 0;
+	virtual void Call(Event& e) = 0;
 };
 
-class CallbackFunction;
-template <typename TOwner ,typename TEvent>
+
+template <typename TOwner, typename TEvent>
 class EventCallback : public IEventCallback {
+private:
+	typedef void (TOwner::* CallbackFunction)(TEvent&);
+
+	TOwner* ownerInstance;
+	CallbackFunction callbackFunction;
+
+	virtual void Call(Event& e) override {
+		std::invoke(callbackFunction, ownerInstance, static_cast<TEvent&>(e));
+	}
+
 public:
 	EventCallback(TOwner* ownerInstance, CallbackFunction callbackFunction) {
 		this->ownerInstance = ownerInstance;
 		this->callbackFunction = callbackFunction;
 	}
 
-	~EventCallback() = default;
-private:
-
-	typedef void(TOwner::*CallbackFunction)(TEvent&);
-
-	TOwner* ownerInstance;
-	CallbackFunction callbackFunction;
-
-	virtual void Call(Event& e) override {
-		// Call the function.
-		std::invoke(callbackFunction, ownerInstance, static_cast<TEvent&>(e));
-	}
+	virtual ~EventCallback() override = default;
 };
 
 typedef std::list<std::unique_ptr<IEventCallback>> HandlerList;
@@ -54,18 +54,20 @@ public:
 		spdlog::info("EventBus destroyed.");
 	}
 
-	
+	// Clears the subscriber list.
+	void Reset() {
+		subscribers.clear();
+	}
+
 	// Subscribe to an event of type T.
 	template <typename TEvent, typename TOwner>
-	void SubscribeToEvent(TOwner* ownerInstance, void(TOwner::* callbackFunction)(TEvent&)) {
-		// Check if the event type is already in the map.
+	void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::* callbackFunction)(TEvent&)) {
 		if (!subscribers[typeid(TEvent)].get()) {
 			subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
 		}
 
-		// Create a new subscriber and add it to the list.
 		auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(ownerInstance, callbackFunction);
-		subscribers[typeid(TEvent)].push_back(std::move(subscriber));
+		subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
 	}
 
 
@@ -78,9 +80,8 @@ public:
 				auto handler = it->get();
 				TEvent event(std::forward<TArgs>(args)...);
 				handler->Execute(event);
-			}	
+			}
 		}
-		spdlog::info("Event emitted.");
 	}
 
 private:
