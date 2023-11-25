@@ -1,10 +1,9 @@
 #pragma once
 
 #include <SDL.h>
-
 #include <../src/ECS/ECS.h>
 #include <../src/AssetManager/AssetManager.h>
-
+#include "../src/EventBus/EventBus.h"
 const int FPS = 60;
 const int FRAME_TARGET_TIME = 1000 / FPS;
 

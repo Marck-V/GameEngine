@@ -434,6 +434,8 @@
     <ClInclude Include="libs\lua\luaconf.h" />
     <ClInclude Include="libs\lua\lualib.h" />
     <ClInclude Include="libs\sol\sol.hpp" />
+    <ClInclude Include="src\EventBus\EventBus.h" />
+    <ClInclude Include="src\Events\Events.h" />
     <ClInclude Include="src\Logger\Logger.h" />
     <ClInclude Include="src\Components\TransformComponent.h" />
     <ClInclude Include="src\Systems\AnimationSystem.h" />

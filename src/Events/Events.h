@@ -1,10 +1,7 @@
 #pragma once
 
 #include "../src/ECS/ECS.h"
-
-class Event {
-
-};
+#include "../src/EventBus/Event.h"
 
 class CollisionEvent : Event {
 public:
