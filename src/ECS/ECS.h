@@ -7,6 +7,7 @@
 #include <set>
 #include <memory>
 #include <spdlog/spdlog.h>
+#include <deque>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -29,7 +30,7 @@ public:
 		Entity(int id) : id(id) {};
 
 		int GetID() const;
-
+		void Kill();
 		Entity& operator=(const Entity& other) = default;
 			
 		bool operator==(const Entity& other) const { return id == other.id; }
@@ -166,7 +167,8 @@ private:
 	std::set<Entity> entitiesToDestroy;
 	std::set<Entity> entitiesToCreate;
 
-	
+	// Deque to hold the free IDs of the entities that were destroyed.
+	std::deque<int> freeIDs;
 	
 public:
 
@@ -176,7 +178,8 @@ public:
 
 	// Entity management
 	Entity CreateEntity();
-	
+	void DestroyEntity(Entity entity);
+
 	// Component management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 	template <typename TComponent> void RemoveComponent(Entity entity);
@@ -188,8 +191,9 @@ public:
 	template <typename TSystem> bool HasSystem() const;
 	template <typename TSystem> TSystem& GetSystem() const;
 
-	// Checks the component signarures of the entity and adds it to the systems that require the components that the entity has.
+	// Add or remove entities from the systems.
 	void AddEntityToSystems(Entity entity);
+	void RemoveEntityFromSystems(Entity entity);
 };
 
 template <typename TComponent, typename... TArgs>

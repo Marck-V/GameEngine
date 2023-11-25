@@ -10,6 +10,11 @@ int Entity::GetID() const
 	
 }
 
+void Entity::Kill()
+{
+	manager->DestroyEntity(*this);
+}
+
 void System::AddEntity(Entity entity)
 {
 	entities.push_back(entity);
@@ -36,26 +41,40 @@ Entity Manager::CreateEntity()
 {
 	int entityID = 0;
 	
-	entityID = numEntities++;
+	// If there are no free IDs, create a new one.
+	if(freeIDs.empty()){
+		entityID = numEntities++;
+		// Check that the signature vector has enough space for the new entity
+		if (entityID >= entityComponentSignatures.size()) {
+			entityComponentSignatures.resize(entityID + 1);
+		}
+	}
+	else {
+		// Reuse an id from the freeIDs list.
+		entityID = freeIDs.front();
+		freeIDs.pop_front();
+	}
 
 	Entity entity(entityID);
 	entity.manager = this;
 	entitiesToCreate.insert(entity);
 
-	// Check that the signature vector has enough space for the new entity
-	if (entityID >= entityComponentSignatures.size()) {
-		entityComponentSignatures.resize(entityID + 1);
-	}
+	
 
 	spdlog::info("Entity created with ID: {0}", entityID);
 
 	return entity;
 }
 
+void Manager::DestroyEntity(Entity entity)
+{
+	entitiesToDestroy.insert(entity);
+}
+
 void Manager::AddEntityToSystems(Entity entity) {
 	const auto entityID = entity.GetID();
 
-	const auto entityComponentSignature = entityComponentSignatures[entityID];
+	const auto& entityComponentSignature = entityComponentSignatures[entityID];
 	
 	// Loop all the systems
 	for (auto& system : systems) {
@@ -69,6 +88,12 @@ void Manager::AddEntityToSystems(Entity entity) {
 		}
 	}
 }
+void Manager::RemoveEntityFromSystems(Entity entity)
+{
+	for (auto system : systems) {
+		system.second->RemoveEntity(entity);
+	}
+}
 void Manager::Update()
 {
 	// Add entities that are waiting to be created to the active systems
@@ -79,4 +104,13 @@ void Manager::Update()
 	entitiesToCreate.clear();
 
 	// TODO: Remove the entities that are waiting to be destroyed from the active systems.
+	for (auto entity : entitiesToDestroy) {
+		RemoveEntityFromSystems(entity);
+
+		// Reset the signature of the entity that is being destroyed.
+		entityComponentSignatures[entity.GetID()].reset();
+
+		// Make the entities ID available for reuse.
+		freeIDs.push_back(entity.GetID());
+	}
 }

@@ -181,6 +181,7 @@ void Engine::LoadLevel(int level){
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
 
+	
 	// TODO: Add an error message that pops up if the file is not found.
 }
 

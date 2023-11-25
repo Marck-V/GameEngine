@@ -17,15 +17,14 @@ void Update(SDL_Renderer* renderer) {
 			auto& collider = entity.GetComponent<BoxColliderComponent>();
 
 			SDL_Rect rect = {
-				(int)transform.position.x,
-				(int)transform.position.y,
-				collider.width,
-				collider.height
+				static_cast<int>(transform.position.x + collider.offset.x),
+				static_cast<int>(transform.position.y + collider.offset.y),
+				static_cast<int>(collider.width),
+				static_cast<int>(collider.height)
 			};
 
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 			SDL_RenderDrawRect(renderer, &rect);
-		
 		}
 	}
 };

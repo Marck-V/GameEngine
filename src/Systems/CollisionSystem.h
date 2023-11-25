@@ -38,6 +38,8 @@ class CollisionSystem : public System {
 					if (collisionDetected) {
 						// Write a log message showing what entity id collided with each other using spdlog.
 						spdlog::info("Entity ID: {} collided with Entity ID: {}", entity1.GetID(), entity2.GetID());
+						
+						// TODO: Emit a collision event.
 					}
 
 				}
