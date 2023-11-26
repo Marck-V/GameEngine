@@ -13,7 +13,7 @@
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/RenderCollisionSystem.h"
 #include "../Systems/DamageSystem.h"
-#include "../Systems/KeyboardMovementSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -113,7 +113,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<CollisionSystem>();
 	manager->AddSystem<RenderCollisionSystem>();
 	manager->AddSystem<DamageSystem>();
-	manager->AddSystem<KeyboardMovementSystem>();
+	manager->AddSystem<KeyboardControlSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
@@ -221,7 +221,7 @@ void Engine::Update()
 
 	 // Perform the subscription of events for all systems.
 	 manager->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
-	 manager->GetSystem<KeyboardMovementSystem>().SubscribeToEvents(eventBus);
+	 manager->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
 
 	// Invoke all the systems in the manager.
 	manager->Update();
@@ -229,7 +229,7 @@ void Engine::Update()
 	// Updating game objects.
 	manager->GetSystem<MovementSystem>().Update(deltaTime);
 	manager->GetSystem<CollisionSystem>().Update(eventBus);
-	manager->GetSystem<KeyboardMovementSystem>().Update();
+	manager->GetSystem<KeyboardControlSystem>().Update();
 }
 
 void Engine::Render() {

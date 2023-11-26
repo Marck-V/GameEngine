@@ -14,6 +14,6 @@ public:
 
 class KeyboardPressedEvent : public Event {
 public:
-	SDL_KeyCode keyCode;
-	KeyboardPressedEvent(SDL_KeyCode keyCode) : keyCode(keyCode) {}
+	SDL_Keycode keyCode;
+	KeyboardPressedEvent(SDL_Keycode keyCode) : keyCode(keyCode) {}
 };

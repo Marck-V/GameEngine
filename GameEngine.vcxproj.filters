@@ -863,7 +863,7 @@
     <ClInclude Include="src\Systems\DamageSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Systems\KeyboardMovementSystem.h">
+    <ClInclude Include="src\Systems\KeyboardControlSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

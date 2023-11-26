@@ -83,6 +83,7 @@ public:
 			}
 		}
 	}
+	
 
 private:
 	// Map of event types to a vector of subscribers.
