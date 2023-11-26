@@ -29,14 +29,16 @@ struct SpriteComponent {
 	int width;
 	int height;
 	int zIndex;
+	bool isFixed;
 	SDL_Rect srcRect;
 
 	// TODO: Add layers
-	SpriteComponent(std::string assetID = "", int width = 0, int height = 0, int zIndex = 0 ,int srcRectX = 0, int srcRectY = 0) {
+	SpriteComponent(std::string assetID = "", int width = 0, int height = 0, int zIndex = 0 , bool isFixed = false, int srcRectX = 0, int srcRectY = 0) {
 		this->assetID = assetID;
 		this->width = width;
 		this->height = height;
 		this->zIndex = zIndex;
+		this->isFixed = isFixed;
 		this->srcRect = { srcRectX, srcRectY, width, height };
 	}
 
@@ -67,5 +69,28 @@ struct BoxColliderComponent {
 		this->width = width;
 		this->height = height;
 		this->offset = offset;
+	}
+};
+
+struct KeyboardControllerComponent {
+	glm::vec2 upVel;
+	glm::vec2 downVel;
+	glm::vec2 leftVel;
+	glm::vec2 rightVel;
+	
+	KeyboardControllerComponent(glm::vec2 upVel = glm::vec2(0), glm::vec2 downVel = glm::vec2(0), glm::vec2 leftVel = glm::vec2(0), glm::vec2 rightVel = glm::vec2(0)) {
+		this->upVel = upVel;
+		this->downVel = downVel;
+		this->leftVel = leftVel;
+		this->rightVel = rightVel;
+	}
+
+
+};
+
+struct CameraComponent {
+
+	CameraComponent() {
+		
 	}
 };

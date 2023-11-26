@@ -17,7 +17,8 @@ class Engine
 		int msPrevFrame = 0;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
-
+		SDL_Rect camera;
+		
 		std::unique_ptr<Manager> manager; // Unique pointer to the manager class.
 		std::unique_ptr<AssetManager> assetManager; // Unique pointer to the asset container class.
 		std::unique_ptr<EventBus> eventBus; // Unique pointer to the event bus class.
@@ -34,7 +35,10 @@ class Engine
 		void Destroy();
 		void Setup(); 
 
-		int windowWidth;
-		int windowHeight;
+		static int windowWidth;
+		static int windowHeight;
+		static int mapWidth;
+		static int mapHeight;
+
 };
 

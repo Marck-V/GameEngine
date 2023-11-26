@@ -14,8 +14,14 @@
 #include "../Systems/RenderCollisionSystem.h"
 #include "../Systems/DamageSystem.h"
 #include "../Systems/KeyboardControlSystem.h"
+#include "../Systems/CameraMovementSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
+
+int Engine::windowWidth = 0;
+int Engine::windowHeight = 0;
+int Engine::mapWidth = 0;
+int Engine::mapHeight = 0;
 
 Engine::Engine()
 {	
@@ -62,6 +68,13 @@ void Engine::Init() {
 	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+
+	// Initialize the camera view with the entire window.
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = windowWidth;
+	camera.h = windowHeight;
+
 
 	// Set is running to true if you wre able to create the window and renderer.
 	isRunning = true;
@@ -114,12 +127,13 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<RenderCollisionSystem>();
 	manager->AddSystem<DamageSystem>();
 	manager->AddSystem<KeyboardControlSystem>();
+	manager->AddSystem<CameraMovementSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
 	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
 	assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
-	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper.png");
+	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper-spritesheet.png");
 	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
 	// TODO: See if this can be improved by using a 2D array.
 	 
@@ -158,35 +172,40 @@ void Engine::LoadLevel(int level){
 			// Create an entity for each tile.
 			Entity tile = manager->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(column * (tileSize * tileScale), row * (tileSize * tileScale)), glm::vec2(tileScale, tileScale), 0.0);
-			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, 0, srcRectX, srcRectY);
+			tile.AddComponent<SpriteComponent>("tilemap-image", tileSize, tileSize, 0, false,srcRectX, srcRectY);
 
 		}
 	}
 	
+	mapFile.close();
+	mapWidth = mapNumColumns * tileSize * tileScale;
+	mapHeight = mapNumRows * tileSize * tileScale;
 
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(-50.0, 0));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
 
 	Entity chopper = manager->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0.0));
-	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2);
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2, false);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
+	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -90), glm::vec2(0, 90), glm::vec2(-90, 0), glm::vec2(90, 0));
+	chopper.AddComponent<CameraComponent>();
 
 	Entity radar = manager->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 2);
+	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 1, true);
 	radar.AddComponent<AnimationComponent>(8, 5, true);
-
+	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 
 	Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(50, 0.0));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
 
 	
@@ -230,6 +249,7 @@ void Engine::Update()
 	manager->GetSystem<MovementSystem>().Update(deltaTime);
 	manager->GetSystem<CollisionSystem>().Update(eventBus);
 	manager->GetSystem<KeyboardControlSystem>().Update();
+	manager->GetSystem<CameraMovementSystem>().Update(camera);
 }
 
 void Engine::Render() {
@@ -240,7 +260,7 @@ void Engine::Render() {
 	SDL_RenderClear(renderer);
 
 	// Invoking the systems needed to render the game.
-	manager->GetSystem<RenderSystem>().Update(renderer, assetManager);
+	manager->GetSystem<RenderSystem>().Update(renderer, assetManager, camera);
 	manager->GetSystem<AnimationSystem>().Update();
 
 	// If debug mode is set to true, then the collision shapes will be rendered.
