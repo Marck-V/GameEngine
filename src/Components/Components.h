@@ -94,3 +94,30 @@ struct CameraComponent {
 		
 	}
 };
+
+struct ProjectileComponent {
+	glm::vec2 velocity;
+	int repeatFrequency;
+	int projectileDuration;
+	int hitPercentageDamage;
+	bool isFriendly;
+	int lastShotTime;
+	
+	// Constructor for the projectile component.
+	ProjectileComponent(glm::vec2 velocity = glm::vec2(0), int repeatFrequency = 0, int projectileDuration = 1000, int hitPercentageDamage = 0, bool isFriendly = false) {
+		this->velocity = velocity;
+		this->repeatFrequency = repeatFrequency;
+		this->projectileDuration = projectileDuration;
+		this->hitPercentageDamage = hitPercentageDamage;
+		this->isFriendly = isFriendly;
+		this->lastShotTime = SDL_GetTicks();
+	}
+};
+
+struct HealthComponent {
+	int healthPercentage;
+
+	HealthComponent(int healthPercentage = 0) {
+		this->healthPercentage = healthPercentage;
+	}
+};

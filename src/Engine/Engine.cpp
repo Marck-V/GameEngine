@@ -15,6 +15,7 @@
 #include "../Systems/DamageSystem.h"
 #include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/CameraMovementSystem.h"
+#include "../Systems/ProjectileSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -128,6 +129,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<DamageSystem>();
 	manager->AddSystem<KeyboardControlSystem>();
 	manager->AddSystem<CameraMovementSystem>();
+	manager->AddSystem<ProjectileSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
@@ -135,6 +137,7 @@ void Engine::LoadLevel(int level){
 	assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
 	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper-spritesheet.png");
 	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
+	assetManager->AddTexture(renderer, "bullet-image", "assets/images/bullet.png");
 	// TODO: See if this can be improved by using a 2D array.
 	 
 	// Load the tilemap
@@ -184,10 +187,12 @@ void Engine::LoadLevel(int level){
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
 	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(-50.0, 0));
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-
+	tank.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 5000, 10000, 0, false);
+	tank.AddComponent<HealthComponent>(100);
+	
 	Entity chopper = manager->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
@@ -195,6 +200,7 @@ void Engine::LoadLevel(int level){
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
 	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -90), glm::vec2(0, 90), glm::vec2(-90, 0), glm::vec2(90, 0));
 	chopper.AddComponent<CameraComponent>();
+	chopper.AddComponent<HealthComponent>(100);
 
 	Entity radar = manager->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
@@ -204,11 +210,12 @@ void Engine::LoadLevel(int level){
 
 	Entity truck = manager->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(50, 0.0));
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
+	truck.AddComponent<ProjectileComponent>(glm::vec2(100.0, 0.0), 2000, 10000, 0, false);
+	truck.AddComponent<HealthComponent>(100);
 
-	
 	// TODO: Add an error message that pops up if the file is not found.
 }
 
@@ -250,6 +257,7 @@ void Engine::Update()
 	manager->GetSystem<CollisionSystem>().Update(eventBus);
 	manager->GetSystem<KeyboardControlSystem>().Update();
 	manager->GetSystem<CameraMovementSystem>().Update(camera);
+	manager->GetSystem<ProjectileSystem>().Update(manager);
 }
 
 void Engine::Render() {
@@ -265,7 +273,7 @@ void Engine::Render() {
 
 	// If debug mode is set to true, then the collision shapes will be rendered.
 	if (isDebugMode) {
-		manager->GetSystem<RenderCollisionSystem>().Update(renderer);
+		manager->GetSystem<RenderCollisionSystem>().Update(renderer, camera);
 	}
 
 	// Show the back buffer.
