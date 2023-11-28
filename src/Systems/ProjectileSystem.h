@@ -19,7 +19,7 @@ public:
 			// Check if its time to re-emit the projectile
 			if (SDL_GetTicks() - projectileComp.lastShotTime > projectileComp.repeatFrequency) {
 
-				glm::vec2 projectilePosition = glm::vec2(0);
+				glm::vec2 projectilePosition = entity.GetComponent<TransformComponent>().position;
 				if (entity.HasComponent<SpriteComponent>()) {
 					auto sprite = entity.GetComponent<SpriteComponent>();
 					projectilePosition.x += (sprite.width / 2 * transform.scale.x);
@@ -30,10 +30,17 @@ public:
 				projectile.AddComponent<RigidBodyComponent>(projectileComp.velocity);
 				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
 				projectile.AddComponent<BoxColliderComponent>(4, 4);
+				projectile.AddComponent<LifespanComponent>(1000);
 
 				// Update the last shot time to the current milliseconds.
 				projectileComp.lastShotTime = SDL_GetTicks();
+
+				if (projectile.GetComponent<LifespanComponent>().lifespanDuration <= 0) {
+					spdlog::info("Projectile destroyed");
+				}
 			}
+
+			
 		}
 	}
 

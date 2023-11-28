@@ -121,3 +121,13 @@ struct HealthComponent {
 		this->healthPercentage = healthPercentage;
 	}
 };
+
+struct LifespanComponent{
+	int lifespanDuration;
+	int startTime;
+
+	LifespanComponent(int lifespanDuration = 0) {
+		this->lifespanDuration = lifespanDuration;
+		this->startTime = SDL_GetTicks();
+	}
+};

@@ -186,13 +186,14 @@ void Engine::LoadLevel(int level){
 
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0));
+	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 5000, 10000, 0, false);
+	tank.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
 	tank.AddComponent<HealthComponent>(100);
-	
+
+
 	Entity chopper = manager->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
@@ -213,7 +214,7 @@ void Engine::LoadLevel(int level){
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileComponent>(glm::vec2(100.0, 0.0), 2000, 10000, 0, false);
+	truck.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
 	truck.AddComponent<HealthComponent>(100);
 
 	// TODO: Add an error message that pops up if the file is not found.
