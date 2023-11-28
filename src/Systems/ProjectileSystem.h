@@ -30,7 +30,7 @@ public:
 				projectile.AddComponent<RigidBodyComponent>(projectileComp.velocity);
 				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
 				projectile.AddComponent<BoxColliderComponent>(4, 4);
-				projectile.AddComponent<LifespanComponent>(1000);
+				projectile.AddComponent<LifespanComponent>(projectileComp.projectileDuration);
 
 				// Update the last shot time to the current milliseconds.
 				projectileComp.lastShotTime = SDL_GetTicks();

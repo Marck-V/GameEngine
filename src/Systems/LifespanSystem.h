@@ -12,8 +12,8 @@ public:
 	void Update() {
 		for (auto entity : GetSystemEntities()) {
 			auto lifespan = entity.GetComponent<LifespanComponent>();
-
-			if(SDL_GetTicks() - lifespan.startTime >= lifespan.lifespanDuration) {
+			
+			if(SDL_GetTicks() - lifespan.startTime > lifespan.lifespanDuration) {
 				entity.Kill();
 				spdlog::info("Projectile destroyed");
 			}
