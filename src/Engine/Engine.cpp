@@ -16,6 +16,7 @@
 #include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileSystem.h"
+#include "../Systems/LifespanSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -130,6 +131,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<KeyboardControlSystem>();
 	manager->AddSystem<CameraMovementSystem>();
 	manager->AddSystem<ProjectileSystem>();
+	manager->AddSystem<LifespanSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
@@ -259,6 +261,7 @@ void Engine::Update()
 	manager->GetSystem<KeyboardControlSystem>().Update();
 	manager->GetSystem<CameraMovementSystem>().Update(camera);
 	manager->GetSystem<ProjectileSystem>().Update(manager);
+	manager->GetSystem<LifespanSystem>().Update();
 }
 
 void Engine::Render() {

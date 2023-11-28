@@ -35,9 +35,6 @@ public:
 				// Update the last shot time to the current milliseconds.
 				projectileComp.lastShotTime = SDL_GetTicks();
 
-				if (projectile.GetComponent<LifespanComponent>().lifespanDuration <= 0) {
-					spdlog::info("Projectile destroyed");
-				}
 			}
 
 			
