@@ -11,6 +11,11 @@ public:
 		RequireComponent<ProjectileComponent>();
 	}
 
+	void SubscribeToEvents(std::unique_ptr<EventBus>& eventBus) {
+		
+		eventBus->EmitEvent<KeyboardPressedEvent>(KeyboardPressedEvent(SDL_SCANCODE_SPACE));
+	}
+
 	void Update(std::unique_ptr<Manager>& manager) {
 		for (auto entity : GetSystemEntities()) {
 			auto& projectileComp = entity.GetComponent<ProjectileComponent>();
