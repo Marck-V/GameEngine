@@ -43,6 +43,10 @@ public:
 				rigidBody.velocity = keyboardControl.leftVel;
 				sprite.srcRect.y = sprite.height * 3;
 				break;
+
+			case SDLK_SPACE:
+				std::cout << "Space pressed" << std::endl;
+				break;
 			}
 		}
 	}
