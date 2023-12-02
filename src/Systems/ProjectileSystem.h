@@ -2,6 +2,7 @@
 
 #include "../ECS/ECS.h"
 #include "../src/Components/Components.h"
+#include "../src/Events/Events.h"
 #include <SDL.h>
 
 class ProjectileSystem : public System {
@@ -11,6 +12,13 @@ public:
 		RequireComponent<ProjectileComponent>();
 	}
 
+	void SubscribeToEvents(std::unique_ptr<EventBus>& eventBus) {
+		eventBus->SubscribeToEvent<KeyboardPressedEvent>(this, &ProjectileSystem::OnKeyPressed);
+	}
+
+	void OnKeyPressed(KeyboardPressedEvent& event) {
+		spdlog::info("Key Pressed: Spacebar.");
+	}
 	void Update(std::unique_ptr<Manager>& manager) {
 		for (auto entity : GetSystemEntities()) {
 			auto& projectileComp = entity.GetComponent<ProjectileComponent>();

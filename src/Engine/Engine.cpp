@@ -218,7 +218,7 @@ void Engine::LoadLevel(int level){
 	truck.AddComponent<BoxColliderComponent>(32, 32);
 	truck.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
 	truck.AddComponent<HealthComponent>(100);
-
+	
 	// TODO: Add an error message that pops up if the file is not found.
 }
 
@@ -251,6 +251,7 @@ void Engine::Update()
 	 // Perform the subscription of events for all systems.
 	 manager->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 	 manager->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
+	 manager->GetSystem<ProjectileSystem>().SubscribeToEvents(eventBus);
 
 	// Invoke all the systems in the manager.
 	manager->Update();

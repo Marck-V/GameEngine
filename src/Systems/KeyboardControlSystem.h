@@ -22,6 +22,7 @@ public:
 			const auto keyboardControl = entity.GetComponent<KeyboardControllerComponent>();
 			auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
 			auto& sprite = entity.GetComponent<SpriteComponent>();
+			auto& projectile = entity.GetComponent<ProjectileComponent>();
 
 			switch (event.symbol) {
 			case SDLK_UP:
@@ -45,7 +46,7 @@ public:
 				break;
 
 			case SDLK_SPACE:
-				std::cout << "Space pressed" << std::endl;
+				entity.AddComponent<ProjectileComponent>();
 				break;
 			}
 		}
