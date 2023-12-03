@@ -46,7 +46,7 @@ public:
 				break;
 
 			case SDLK_SPACE:
-				entity.AddComponent<ProjectileComponent>();
+				
 				break;
 			}
 		}

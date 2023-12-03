@@ -17,8 +17,42 @@ public:
 	}
 
 	void OnKeyPressed(KeyboardPressedEvent& event) {
-		spdlog::info("Key Pressed: Spacebar.");
+		if (event.symbol == SDLK_SPACE) {
+			spdlog::info("Key Pressed: Spacebar.");
+			for (auto entity : GetSystemEntities()) {
+				if (entity.HasComponent<CameraComponent>()) {
+					const auto projectileComp = entity.GetComponent<ProjectileComponent>();
+					const auto transform = entity.GetComponent<TransformComponent>();
+					const auto rigidbody = entity.GetComponent<RigidBodyComponent>();
+
+					glm::vec2 projectilePosition = transform.position;
+					if (entity.HasComponent<SpriteComponent>()) {
+						auto sprite = entity.GetComponent<SpriteComponent>();
+						projectilePosition.x += (sprite.width / 2 * transform.scale.x);
+						projectilePosition.y += (sprite.height / 2 * transform.scale.y);
+					}
+
+					glm::vec2 projectileVelocity = projectileComp.velocity;
+					int directionX = 0;
+					int directionY = 0;
+					if (rigidbody.velocity.x > 0) directionX = +1;
+					if (rigidbody.velocity.x < 0) directionX = -1;
+					if (rigidbody.velocity.y > 0) directionY = +1;
+					if (rigidbody.velocity.y < 0) directionY = -1;
+					projectileVelocity.x = projectileVelocity.x * directionX;
+					projectileVelocity.y = projectileVelocity.y * directionY;
+
+					Entity projectile = entity.manager->CreateEntity();
+					projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
+					projectile.AddComponent<RigidBodyComponent>(projectileVelocity);
+					projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
+					projectile.AddComponent<BoxColliderComponent>(4, 4);
+					projectile.AddComponent<LifespanComponent>(projectileComp.projectileDuration);
+				}
+			}
+		}
 	}
+
 	void Update(std::unique_ptr<Manager>& manager) {
 		for (auto entity : GetSystemEntities()) {
 			auto& projectileComp = entity.GetComponent<ProjectileComponent>();
@@ -33,19 +67,10 @@ public:
 					projectilePosition.x += (sprite.width / 2 * transform.scale.x);
 					projectilePosition.y += (sprite.height / 2 * transform.scale.y);
 				}
-				Entity projectile = manager->CreateEntity();
-				projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
-				projectile.AddComponent<RigidBodyComponent>(projectileComp.velocity);
-				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
-				projectile.AddComponent<BoxColliderComponent>(4, 4);
-				projectile.AddComponent<LifespanComponent>(projectileComp.projectileDuration);
 
 				// Update the last shot time to the current milliseconds.
 				projectileComp.lastShotTime = SDL_GetTicks();
-
 			}
-
-			
 		}
 	}
 

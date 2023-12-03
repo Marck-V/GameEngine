@@ -204,6 +204,7 @@ void Engine::LoadLevel(int level){
 	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -90), glm::vec2(0, 90), glm::vec2(-90, 0), glm::vec2(90, 0));
 	chopper.AddComponent<CameraComponent>();
 	chopper.AddComponent<HealthComponent>(100);
+	chopper.AddComponent<ProjectileComponent>(glm::vec2(150.0, 150.0), 0, 10000, 0, true);
 
 	Entity radar = manager->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
