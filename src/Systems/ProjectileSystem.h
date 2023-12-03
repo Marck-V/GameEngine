@@ -58,6 +58,10 @@ public:
 			auto& projectileComp = entity.GetComponent<ProjectileComponent>();
 			auto transform = entity.GetComponent<TransformComponent>();
 
+			if (projectileComp.repeatFrequency == 0) {
+				continue;
+			}
+
 			// Check if its time to re-emit the projectile
 			if (SDL_GetTicks() - projectileComp.lastShotTime > projectileComp.repeatFrequency) {
 
@@ -67,6 +71,13 @@ public:
 					projectilePosition.x += (sprite.width / 2 * transform.scale.x);
 					projectilePosition.y += (sprite.height / 2 * transform.scale.y);
 				}
+
+				Entity projectile = entity.manager->CreateEntity();
+				projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
+				projectile.AddComponent<RigidBodyComponent>(projectileComp.velocity);
+				projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
+				projectile.AddComponent<BoxColliderComponent>(4, 4);
+				projectile.AddComponent<LifespanComponent>(projectileComp.projectileDuration);
 
 				// Update the last shot time to the current milliseconds.
 				projectileComp.lastShotTime = SDL_GetTicks();
