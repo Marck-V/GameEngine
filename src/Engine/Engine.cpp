@@ -195,7 +195,6 @@ void Engine::LoadLevel(int level){
 	tank.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
 	tank.AddComponent<HealthComponent>(100);
 
-
 	Entity chopper = manager->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));

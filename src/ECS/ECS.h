@@ -28,11 +28,18 @@ private:
 
 public:
 		Entity(int id) : id(id) {};
-
+		Entity(const Entity& entity) = default;
 		int GetID() const;
 		void Kill();
+
+		// Manage entity tags and groups.
+		void Tag(std::string& tag);
+		bool HasTag(const std::string& tag) const;
+		void RemoveTag();
+		void Group(const std::string& group);
+		bool IsInGroup(const std::string& group) const;
+
 		Entity& operator=(const Entity& other) = default;
-			
 		bool operator==(const Entity& other) const { return id == other.id; }
 		bool operator !=(const Entity& other) const { return id != other.id; }
 		bool operator >(const Entity& other) const { return id > other.id; }
@@ -167,6 +174,14 @@ private:
 	std::set<Entity> entitiesToDestroy;
 	std::set<Entity> entitiesToCreate;
 
+	// Entity tags (one tag name per entity)
+	std::unordered_map<std::string, Entity> entityTags;
+	std::unordered_map<int, std::string> tagPerEntity;
+
+	// Entity groups (a set of entities per group name)
+	std::unordered_map<std::string, std::set<Entity>> entityPerGroup;
+	std::unordered_map<int, std::string> groupPerEntity;
+
 	// Deque to hold the free IDs of the entities that were destroyed.
 	std::deque<int> freeIDs;
 	
@@ -179,6 +194,18 @@ public:
 	// Entity management
 	Entity CreateEntity();
 	void DestroyEntity(Entity entity);
+
+	// Tag Management
+	void SetTag(Entity entity, std::string& tag);
+	bool HasTag(Entity entity, const std::string& tag) const;
+	Entity GetEntityByTag(const std::string& tag) const;
+	void RemoveTag(Entity entity);
+
+	// Group management
+	void GroupEntity(Entity entity, const std::string& group);
+	bool IsInGroup(Entity entity, const std::string& group) const;
+	std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
+	void RemoveFromGroup(Entity entity);
 
 	// Component management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
