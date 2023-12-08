@@ -15,6 +15,26 @@ void Entity::Kill()
 	manager->DestroyEntity(*this);
 }
 
+void Entity::Tag(std::string& tag)
+{
+	manager->SetTag(*this, tag);
+}
+
+bool Entity::HasTag(const std::string& tag) const
+{
+	manager->HasTag(*this, tag);
+}
+
+void Entity::Group(const std::string& group)
+{
+	manager->GroupEntity(*this, group);
+}
+
+bool Entity::IsInGroup(const std::string& group) const
+{
+	manager->EntityBelongsToGroup(*this, group);
+}
+
 void System::AddEntity(Entity entity)
 {
 	entities.push_back(entity);
@@ -69,6 +89,68 @@ Entity Manager::CreateEntity()
 void Manager::DestroyEntity(Entity entity)
 {
 	entitiesToDestroy.insert(entity);
+}
+
+void Manager::SetTag(Entity entity, std::string& tag)
+{
+	entityPerTag.emplace(tag, entity);
+	tagPerEntity.emplace(entity.GetID(), tag);
+}
+
+bool Manager::HasTag(Entity entity, const std::string& tag) const {
+	if (tagPerEntity.find(entity.GetID()) == tagPerEntity.end()) {
+		return false;
+	}
+	return entityPerTag.find(tag)->second == entity;
+}
+
+Entity Manager::GetEntityByTag(const std::string& tag) const
+{
+	return entityPerTag.at(tag);
+}
+
+void Manager::RemoveTag(Entity entity)
+{
+	auto taggedEntity = tagPerEntity.find(entity.GetID());
+	if (taggedEntity != tagPerEntity.end()) {
+		auto tag = taggedEntity->second;
+		entityPerTag.erase(tag);
+		tagPerEntity.erase(taggedEntity);
+	}
+}
+
+void Manager::GroupEntity(Entity entity, const std::string& group)
+{
+	entityPerGroup.emplace(group, std::set<Entity>());
+	entityPerGroup[group].emplace(entity);
+	groupPerEntity.emplace(entity.GetID(), group);
+}
+
+bool Manager::EntityBelongsToGroup(Entity entity, const std::string& group) const
+{
+	auto groupEntities = entityPerGroup.at(group);
+	return groupEntities.find(entity) != groupEntities.end();
+}
+
+std::vector<Entity> Manager::GetEntitiesByGroup(const std::string& group) const
+{
+	auto& setOfEntities = entityPerGroup.at(group);
+	return std::vector<Entity> (setOfEntities.begin(), setOfEntities.end());
+}
+
+void Manager::RemoveFromGroup(Entity entity)
+{
+	auto groupedEntity = groupPerEntity.find(entity.GetID());
+	if (groupedEntity != groupPerEntity.end()) {
+		auto group = entityPerGroup.find(groupedEntity->second);
+		if (group != entityPerGroup.end()) {
+			auto entityInGroup = group->second.find(entity);
+			if (entityInGroup != group->second.end()) {
+				group->second.erase(entityInGroup);
+			}
+		}
+		groupPerEntity.erase(groupedEntity);
+	}
 }
 
 void Manager::AddEntityToSystems(Entity entity) {

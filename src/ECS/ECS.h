@@ -35,7 +35,6 @@ public:
 		// Manage entity tags and groups.
 		void Tag(std::string& tag);
 		bool HasTag(const std::string& tag) const;
-		void RemoveTag();
 		void Group(const std::string& group);
 		bool IsInGroup(const std::string& group) const;
 
@@ -175,7 +174,7 @@ private:
 	std::set<Entity> entitiesToCreate;
 
 	// Entity tags (one tag name per entity)
-	std::unordered_map<std::string, Entity> entityTags;
+	std::unordered_map<std::string, Entity> entityPerTag;
 	std::unordered_map<int, std::string> tagPerEntity;
 
 	// Entity groups (a set of entities per group name)
@@ -203,7 +202,7 @@ public:
 
 	// Group management
 	void GroupEntity(Entity entity, const std::string& group);
-	bool IsInGroup(Entity entity, const std::string& group) const;
+	bool EntityBelongsToGroup(Entity entity, const std::string& group) const;
 	std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
 	void RemoveFromGroup(Entity entity);
 
