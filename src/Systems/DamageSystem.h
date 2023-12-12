@@ -17,8 +17,10 @@ public:
 
 	void OnCollision(CollisionEvent& event) {
 		spdlog::info("Damage system received a collision event detected between Entity ID: {} and Entity ID: {}", event.entityA.GetID(), event.entityB.GetID());
-		//event.entityA.Kill();
-		//event.entityB.Kill();
+		Entity a = event.entityA;
+		Entity b = event.entityB;
+
+
 	}
 
 	void Update() {

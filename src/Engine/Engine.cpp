@@ -188,6 +188,7 @@ void Engine::LoadLevel(int level){
 
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
+	tank.Group("enemies");
 	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
@@ -196,6 +197,8 @@ void Engine::LoadLevel(int level){
 	tank.AddComponent<HealthComponent>(100);
 
 	Entity chopper = manager->CreateEntity();
+	std::string playerTag = "Player";
+	chopper.Tag(playerTag);
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2, false);
@@ -212,6 +215,7 @@ void Engine::LoadLevel(int level){
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 
 	Entity truck = manager->CreateEntity();
+	truck.Group("enemies");
 	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);

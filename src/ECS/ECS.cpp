@@ -7,7 +7,6 @@ int IComponent::nextID = 0;
 int Entity::GetID() const
 {
 	return id;
-	
 }
 
 void Entity::Kill()
@@ -22,7 +21,7 @@ void Entity::Tag(std::string& tag)
 
 bool Entity::HasTag(const std::string& tag) const
 {
-	manager->HasTag(*this, tag);
+	return manager->HasTag(*this, tag);
 }
 
 void Entity::Group(const std::string& group)
@@ -32,7 +31,7 @@ void Entity::Group(const std::string& group)
 
 bool Entity::IsInGroup(const std::string& group) const
 {
-	manager->EntityBelongsToGroup(*this, group);
+	return manager->EntityBelongsToGroup(*this, group);
 }
 
 void System::AddEntity(Entity entity)
