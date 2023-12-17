@@ -14,7 +14,7 @@ void Entity::Kill()
 	manager->DestroyEntity(*this);
 }
 
-void Entity::Tag(std::string& tag)
+void Entity::Tag(const std::string& tag)
 {
 	manager->SetTag(*this, tag);
 }
@@ -90,7 +90,7 @@ void Manager::DestroyEntity(Entity entity)
 	entitiesToDestroy.insert(entity);
 }
 
-void Manager::SetTag(Entity entity, std::string& tag)
+void Manager::SetTag(Entity entity, const std::string& tag)
 {
 	entityPerTag.emplace(tag, entity);
 	tagPerEntity.emplace(entity.GetID(), tag);
@@ -127,8 +127,26 @@ void Manager::GroupEntity(Entity entity, const std::string& group)
 
 bool Manager::EntityBelongsToGroup(Entity entity, const std::string& group) const
 {
+	/*if(entityPerGroup.find(group) == entityPerGroup.end()) {
+		return false;
+	}
+	
 	auto groupEntities = entityPerGroup.at(group);
-	return groupEntities.find(entity) != groupEntities.end();
+	return groupEntities.find(entity) != groupEntities.end();*/
+	try {
+
+		auto& groupEntities = entityPerGroup.at(group);
+
+
+
+		return groupEntities.find(entity.GetID()) != groupEntities.end();
+
+	}
+	catch (const std::out_of_range&) {
+
+		return false;
+
+	}
 }
 
 std::vector<Entity> Manager::GetEntitiesByGroup(const std::string& group) const

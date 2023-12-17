@@ -6,16 +6,15 @@
 class LifespanSystem : public System {
 public:
 	LifespanSystem() {
-		RequireComponent<LifespanComponent>();
+		RequireComponent<ProjectileComponent>();
 	}
 
 	void Update() {
 		for (auto entity : GetSystemEntities()) {
-			auto lifespan = entity.GetComponent<LifespanComponent>();
+			auto projectile = entity.GetComponent<ProjectileComponent>();
 			
-			if(SDL_GetTicks() - lifespan.startTime > lifespan.lifespanDuration) {
+			if(SDL_GetTicks() - projectile.startTime > projectile.duration) {
 				entity.Kill();
-				spdlog::info("Projectile destroyed");
 			}
 		}
 	}

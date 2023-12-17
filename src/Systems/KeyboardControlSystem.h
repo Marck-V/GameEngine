@@ -21,8 +21,7 @@ public:
 		for (auto entity : GetSystemEntities()) {
 			const auto keyboardControl = entity.GetComponent<KeyboardControllerComponent>();
 			auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
-			auto& sprite = entity.GetComponent<SpriteComponent>();
-			auto& projectile = entity.GetComponent<ProjectileComponent>();
+			auto& sprite = entity.GetComponent<SpriteComponent>(); 
 
 			switch (event.symbol) {
 			case SDLK_UP:

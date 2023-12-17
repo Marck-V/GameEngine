@@ -193,20 +193,20 @@ void Engine::LoadLevel(int level){
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
 	tank.AddComponent<HealthComponent>(100);
 
 	Entity chopper = manager->CreateEntity();
-	std::string playerTag = "Player";
-	chopper.Tag(playerTag);
+	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2, false);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
 	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -90), glm::vec2(0, 90), glm::vec2(-90, 0), glm::vec2(90, 0));
 	chopper.AddComponent<CameraComponent>();
+	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<HealthComponent>(100);
-	chopper.AddComponent<ProjectileComponent>(glm::vec2(150.0, 150.0), 0, 10000, 0, true);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, 10000, 0, true);
 
 	Entity radar = manager->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
@@ -216,11 +216,11 @@ void Engine::LoadLevel(int level){
 
 	Entity truck = manager->CreateEntity();
 	truck.Group("enemies");
-	truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	truck.AddComponent<TransformComponent>(glm::vec2(100.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 0, false);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
 	
 	// TODO: Add an error message that pops up if the file is not found.

@@ -33,7 +33,7 @@ public:
 		void Kill();
 
 		// Manage entity tags and groups.
-		void Tag(std::string& tag);
+		void Tag(const std::string& tag);
 		bool HasTag(const std::string& tag) const;
 		void Group(const std::string& group);
 		bool IsInGroup(const std::string& group) const;
@@ -135,13 +135,11 @@ public:
 		data.push_back(object);
 	}
 
-
 	void Set(int index, T object) {
 		data[index] = object;
 	}
 
 	T& Get(int index) {
-		
 		return static_cast<T&>(data[index]);
 	}
 
@@ -195,7 +193,7 @@ public:
 	void DestroyEntity(Entity entity);
 
 	// Tag Management
-	void SetTag(Entity entity, std::string& tag);
+	void SetTag(Entity entity, const std::string& tag);
 	bool HasTag(Entity entity, const std::string& tag) const;
 	Entity GetEntityByTag(const std::string& tag) const;
 	void RemoveTag(Entity entity);
