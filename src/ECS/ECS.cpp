@@ -209,6 +209,11 @@ void Manager::Update()
 		// Reset the signature of the entity that is being destroyed.
 		entityComponentSignatures[entity.GetID()].reset();
 
+		// Remove the entity from the component pools
+		for (auto pool : componentPools) {
+			pool->RemoveEntityFromPool(entity);
+		}
+
 		// Make the entities ID available for reuse.
 		freeIDs.push_back(entity.GetID());
 	}
