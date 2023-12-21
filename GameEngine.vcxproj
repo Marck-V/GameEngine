@@ -449,6 +449,7 @@
     <ClInclude Include="src\Systems\ProjectileSystem.h" />
     <ClInclude Include="src\Systems\RenderCollisionSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
+    <ClInclude Include="src\Systems\RenderTextSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libs\glm\detail\func_common.inl" />

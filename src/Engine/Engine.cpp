@@ -17,6 +17,7 @@
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileSystem.h"
 #include "../Systems/LifespanSystem.h"
+#include "../Systems/RenderTextSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -48,6 +49,11 @@ void Engine::Init() {
 		return;
 	}
 	
+	if (TTF_Init() != 0) {
+		spdlog::error("Error initializing SDL TTF.");
+		return;
+	}
+
 	SDL_DisplayMode displayMode;
 
 	// Get the current display mode and resolution of the first display.
@@ -132,6 +138,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<CameraMovementSystem>();
 	manager->AddSystem<ProjectileSystem>();
 	manager->AddSystem<LifespanSystem>();
+	manager->AddSystem<RenderTextSystem>();
 
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
@@ -140,6 +147,7 @@ void Engine::LoadLevel(int level){
 	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper-spritesheet.png");
 	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
 	assetManager->AddTexture(renderer, "bullet-image", "assets/images/bullet.png");
+	assetManager->AddFont("charriot-font", "assets/fonts/charriot.ttf", 20);
 	// TODO: See if this can be improved by using a 2D array.
 	 
 	// Load the tilemap
@@ -223,6 +231,9 @@ void Engine::LoadLevel(int level){
 	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
 	
+	Entity label = manager->CreateEntity();
+	SDL_Color white = { 255, 255, 255, 255 };
+	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 50, 10), "This is a text label.", "charriot-font", white, true);
 	// TODO: Add an error message that pops up if the file is not found.
 }
 
@@ -279,6 +290,7 @@ void Engine::Render() {
 	// Invoking the systems needed to render the game.
 	manager->GetSystem<RenderSystem>().Update(renderer, assetManager, camera);
 	manager->GetSystem<AnimationSystem>().Update();
+	manager->GetSystem<RenderTextSystem>().Update(renderer, assetManager, camera);
 
 	// If debug mode is set to true, then the collision shapes will be rendered.
 	if (isDebugMode) {
