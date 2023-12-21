@@ -129,30 +129,27 @@ public:
 		return size;
 	}
 
-	void Resize(int n) {
-		data.resize(n);
-	}
-
 	void Clear() {
 		data.clear();
+		entityIdToIndex.clear();
+		indexToEntityId.clear();
 		size = 0;
 	}
 
-	void Add(T object) {
-		data.push_back(object);
-	}
-
-	void Set(int entityID, T object) {
-		if (entityIdToIndex.find(entityID) == entityIdToIndex.end()) {
-			int index = entityIdToindex[entityID];
+	void Set(int entityId, T object) {
+		if (entityIdToIndex.find(entityId) != entityIdToIndex.end()) {
+			// If the element already exists, simply replace the component object
+			int index = entityIdToIndex[entityId];
 			data[index] = object;
 		}
 		else {
+			// When adding a new object, we keep track of the entity ids and their vector index
 			int index = size;
-			entityIdToIndex.emplace(entityID, index);
-			indexToEntityId.emplace(index, entityID);
+			entityIdToIndex.emplace(entityId, index);
+			indexToEntityId.emplace(index, entityId);
 			if (index >= data.capacity()) {
-				data.resize(index * 2);
+				// If necessary, we resize by always doubling the current capacity
+				data.resize(size * 2);
 			}
 			data[index] = object;
 			size++;
@@ -164,11 +161,11 @@ public:
 		int indexOfRemoved = entityIdToIndex[entityId];
 		int indexOfLast = size - 1;
 		data[indexOfRemoved] = data[indexOfLast];
-		
-		// Update the index-entity maps to point to the correct elements.
-		int entityIdOfLast = indexToEntityId[indexOfLast];
-		entityIdToIndex[entityIdOfLast] = indexOfRemoved;
-		indexToEntityId[indexOfRemoved] = entityIdOfLast;
+
+		// Update the index-entity maps to point to the correct elements
+		int entityIdOfLastElement = indexToEntityId[indexOfLast];
+		entityIdToIndex[entityIdOfLastElement] = indexOfRemoved;
+		indexToEntityId[indexOfRemoved] = entityIdOfLastElement;
 
 		entityIdToIndex.erase(entityId);
 		indexToEntityId.erase(indexOfLast);

@@ -127,26 +127,11 @@ void Manager::GroupEntity(Entity entity, const std::string& group)
 
 bool Manager::EntityBelongsToGroup(Entity entity, const std::string& group) const
 {
-	/*if(entityPerGroup.find(group) == entityPerGroup.end()) {
+	if (entityPerGroup.find(group) == entityPerGroup.end()) {
 		return false;
 	}
-	
 	auto groupEntities = entityPerGroup.at(group);
-	return groupEntities.find(entity) != groupEntities.end();*/
-	try {
-
-		auto& groupEntities = entityPerGroup.at(group);
-
-
-
-		return groupEntities.find(entity.GetID()) != groupEntities.end();
-
-	}
-	catch (const std::out_of_range&) {
-
-		return false;
-
-	}
+	return groupEntities.find(entity.GetID()) != groupEntities.end();
 }
 
 std::vector<Entity> Manager::GetEntitiesByGroup(const std::string& group) const
@@ -187,12 +172,14 @@ void Manager::AddEntityToSystems(Entity entity) {
 		}
 	}
 }
+
 void Manager::RemoveEntityFromSystems(Entity entity)
 {
 	for (auto system : systems) {
 		system.second->RemoveEntity(entity);
 	}
 }
+
 void Manager::Update()
 {
 	// Add entities that are waiting to be created to the active systems
@@ -202,19 +189,22 @@ void Manager::Update()
 
 	entitiesToCreate.clear();
 
-	// TODO: Remove the entities that are waiting to be destroyed from the active systems.
 	for (auto entity : entitiesToDestroy) {
 		RemoveEntityFromSystems(entity);
-
-		// Reset the signature of the entity that is being destroyed.
 		entityComponentSignatures[entity.GetID()].reset();
 
 		// Remove the entity from the component pools
 		for (auto pool : componentPools) {
-			pool->RemoveEntityFromPool(entity);
+			if (pool) {
+				pool->RemoveEntityFromPool(entity.GetID());
+			}
 		}
-
+		
 		// Make the entities ID available for reuse.
 		freeIDs.push_back(entity.GetID());
+		
+		RemoveTag(entity);
+		RemoveFromGroup(entity);
 	}
+	entitiesToDestroy.clear();
 }
