@@ -157,5 +157,6 @@ struct TextLabelComponent {
 		this->text = text;
 		this->assetID = assetID;
 		this->color = color;
+		this->isFixed = isFixed;
 	}
 };

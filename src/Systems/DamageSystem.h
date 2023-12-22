@@ -20,55 +20,60 @@ public:
 		Entity a = event.entityA;
 		Entity b = event.entityB;
 		
-		if (a.IsInGroup("projectiles") && b.HasTag("player")) {
-			OnProjectileHitsPlayer(a, b);
-		}
+        if (a.IsInGroup("projectiles") && b.HasTag("player")) {
+            OnProjectileHitsPlayer(a, b); // "a" is the projectile, "b" is the player
+        }
 
-		if (b.IsInGroup("projectiles") && a.HasTag("player")) {
-			OnProjectileHitsPlayer(b, a);
-		}
+        if (b.IsInGroup("projectiles") && a.HasTag("player")) {
+            OnProjectileHitsPlayer(b, a); // "b" is the projectile, "a" is the player
+        }
 
-		if (a.IsInGroup("projectiles") && b.IsInGroup("enemies")) {
-			OnProjectileHitsEnemy(a, b);
-		}
+        if (a.IsInGroup("projectiles") && b.IsInGroup("enemies")) {
+            OnProjectileHitsEnemy(a, b); // "a" is the projectile, "b" is the enemy
+        }
 
-		if (b.IsInGroup("projectiles") && a.IsInGroup("enemies")) {
-			OnProjectileHitsEnemy(b, a);
-		}
+        if (b.IsInGroup("projectiles") && a.IsInGroup("enemies")) {
+            OnProjectileHitsEnemy(b, a); // "b" is the projectile, "a" is the enemy
+        }
 	}
 
-	void OnProjectileHitsPlayer(Entity projectile, Entity player) {
-		const auto projectileComponent = projectile.GetComponent<ProjectileComponent>();
+    void OnProjectileHitsPlayer(Entity projectile, Entity player) {
+        const auto projectileComponent = projectile.GetComponent<ProjectileComponent>();
 
-		if (!projectileComponent.isFriendly) {
-			// Reduce the health of the player by the projectile hitPercentDamage
-			auto& health = player.GetComponent<HealthComponent>();
+        if (!projectileComponent.isFriendly) {
+            // Reduce the health of the player by the projectile hitPercentDamage
+            auto& health = player.GetComponent<HealthComponent>();
 
-			// Subtract the health of the player
-			health.healthPercentage -= projectileComponent.hitPercentDamage;
-			
-			// Kills the player when health reaches zero
-			if (health.healthPercentage <= 0) {
-				player.Kill();
-			}
+            // Subtract the health of the player
+            health.healthPercentage -= projectileComponent.hitPercentDamage;
 
-			// Kill the projectile
-			projectile.Kill();
-		}
-	}
+            // Kills the player when health reaches zero
+            if (health.healthPercentage <= 0) {
+                player.Kill();
+            }
 
-	void OnProjectileHitsEnemy(Entity projectile, Entity enemy) {
-		auto projectileComponent = projectile.GetComponent<ProjectileComponent>();
-		
-		if (projectileComponent.isFriendly) {
-			auto& healthComponent = enemy.GetComponent<HealthComponent>();
+            // Kill the projectile
+            projectile.Kill();
+        }
+    }
 
-			healthComponent.healthPercentage -= projectileComponent.hitPercentDamage;
+    void OnProjectileHitsEnemy(Entity projectile, Entity enemy) {
+        const auto projectileComponent = projectile.GetComponent<ProjectileComponent>();
 
-			if (healthComponent.healthPercentage <= 0) {
-				enemy.Kill();
-			}
-			projectile.Kill();
-		}
-	}
+        if (projectileComponent.isFriendly) {
+            // Reduce the health of the enemy by the projectile hitPercentDamage
+            auto& health = enemy.GetComponent<HealthComponent>();
+
+            // Subtract the health of the enemy
+            health.healthPercentage -= projectileComponent.hitPercentDamage;
+
+            // Kills the enemy when health reaches zero
+            if (health.healthPercentage <= 0) {
+                enemy.Kill();
+            }
+
+            // Kill the projectile
+            projectile.Kill();
+        }
+    }
 };

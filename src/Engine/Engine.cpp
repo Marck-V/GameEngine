@@ -18,6 +18,7 @@
 #include "../Systems/ProjectileSystem.h"
 #include "../Systems/LifespanSystem.h"
 #include "../Systems/RenderTextSystem.h"
+#include "../Systems/RenderHealthBarSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -139,7 +140,7 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<ProjectileSystem>();
 	manager->AddSystem<LifespanSystem>();
 	manager->AddSystem<RenderTextSystem>();
-
+	manager->AddSystem<RenderHealthBarSystem>();
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
 	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
@@ -214,7 +215,7 @@ void Engine::LoadLevel(int level){
 	chopper.AddComponent<CameraComponent>();
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<HealthComponent>(100);
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, 10000, 0, true);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, 10000, 10, true);
 
 	Entity radar = manager->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
@@ -233,8 +234,7 @@ void Engine::LoadLevel(int level){
 	
 	Entity label = manager->CreateEntity();
 	SDL_Color white = { 255, 255, 255, 255 };
-	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 50, 10), "This is a text label.", "charriot-font", white, true);
-	// TODO: Add an error message that pops up if the file is not found.
+	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 50, 10), "Chopper 1.0", "charriot-font", white, true);
 }
 
 
@@ -291,6 +291,7 @@ void Engine::Render() {
 	manager->GetSystem<RenderSystem>().Update(renderer, assetManager, camera);
 	manager->GetSystem<AnimationSystem>().Update();
 	manager->GetSystem<RenderTextSystem>().Update(renderer, assetManager, camera);
+	manager->GetSystem<RenderHealthBarSystem>().Update(renderer, assetManager, camera);
 
 	// If debug mode is set to true, then the collision shapes will be rendered.
 	if (isDebugMode) {
