@@ -3,6 +3,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
+#include <imgui/imgui_impl_sdl.h>
 #include "../src/Components/Components.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -62,7 +65,9 @@ void Engine::Init() {
 
 	windowWidth = 1280;
 	windowHeight = 720;
-	
+
+
+
 	window = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
 
 	if (!window) {
@@ -77,6 +82,10 @@ void Engine::Init() {
 	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_SHOWN);
+
+	// Initialize ImGui
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
 
 	// Initialize the camera view with the entire window.
 	camera.x = 0;
@@ -106,6 +115,18 @@ void Engine::ProcessInput() {
 	// Gets the address to the event.
 	while (SDL_PollEvent(&event)) {
 
+		// ImGUI SDL Input handling.
+		ImGui_ImplSDL2_ProcessEvent(&event);
+		ImGuiIO& io = ImGui::GetIO();
+
+		int mouseX, mouseY;
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+
+		io.MousePos = ImVec2(mouseX, mouseY);
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+		// Handling core sdl events.
 		switch (event.type) {
 
 			case SDL_QUIT:
@@ -123,7 +144,6 @@ void Engine::ProcessInput() {
 				break;
 		}
 	}
-
 }
 
 void Engine::LoadLevel(int level){
@@ -296,6 +316,11 @@ void Engine::Render() {
 	// If debug mode is set to true, then the collision shapes will be rendered.
 	if (isDebugMode) {
 		manager->GetSystem<RenderCollisionSystem>().Update(renderer, camera);
+
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+		ImGuiSDL::Render(ImGui::GetDrawData());
 	}
 
 	// Show the back buffer.
@@ -303,10 +328,9 @@ void Engine::Render() {
 }
 
 void Engine::Destroy() {
+	ImGuiSDL::Deinitialize();
+	ImGui::DestroyContext();
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
-
-
-
