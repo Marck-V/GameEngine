@@ -64,8 +64,8 @@ void Engine::Init() {
 	// Get the current display mode and resolution of the first display.
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	windowWidth = 1920;
-	windowHeight = 1080;
+	windowWidth = 1600;
+	windowHeight = 900;
 
 
 

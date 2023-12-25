@@ -72,8 +72,9 @@ class MovementSystem : public System {
 					transform.position.y = transform.position.y < paddingTop ? paddingTop : transform.position.y;
 					transform.position.y = transform.position.y > Engine::mapHeight - paddingBottom ? Engine::mapHeight - paddingBottom : transform.position.y;
 				}
-
-				bool isEntityOutsideMap = transform.position.x < 0 || transform.position.x > Engine::mapWidth || transform.position.y < 0 || transform.position.y > Engine::mapHeight;
+				
+				int margin = 100;
+				bool isEntityOutsideMap = transform.position.x < -margin || transform.position.x > Engine::mapWidth + margin || transform.position.y < -margin || transform.position.y > Engine::mapHeight + margin;
 
 				if (isEntityOutsideMap && !entity.HasTag("player")) {
 					entity.Kill();

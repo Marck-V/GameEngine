@@ -17,26 +17,62 @@ public:
 
 
 	void Update(SDL_Renderer* renderer, std::unique_ptr<AssetManager>& assetManager, SDL_Rect& camera) {
+        // Create a vector with both Sprite and Transform component of all entities
+        struct RenderableEntity {
+            TransformComponent transformComponent;
+            SpriteComponent spriteComponent;
+        };
+        std::vector<RenderableEntity> renderableEntities;
+        for (auto entity : GetSystemEntities()) {
+            RenderableEntity renderableEntity;
+            renderableEntity.spriteComponent = entity.GetComponent<SpriteComponent>();
+            renderableEntity.transformComponent = entity.GetComponent<TransformComponent>();
 
-		std::vector<Entity> sortedEntities = GetSystemEntities();
+            //Bypass rendering entities if they are not in the camera view.
+            bool isEntityOutsideCameraView = (
+                renderableEntity.transformComponent.position.x + (renderableEntity.transformComponent.scale.x * renderableEntity.spriteComponent.width) < camera.x ||
+                renderableEntity.transformComponent.position.x > camera.x + camera.w ||
+                renderableEntity.transformComponent.position.y + (renderableEntity.transformComponent.scale.y * renderableEntity.spriteComponent.height) < camera.y ||
+                renderableEntity.transformComponent.position.y > camera.y + camera.h
+                );
 
-		// Sort by the Z-index.
-		std::sort(sortedEntities.begin(), sortedEntities.end(), [](Entity& a, Entity& b) { return a.GetComponent<SpriteComponent>().zIndex < b.GetComponent<SpriteComponent>().zIndex; });
-		
-		// Loop through all entities that the system is interested in
-		for (auto entity : sortedEntities) {
-			
-			const auto transform = entity.GetComponent<TransformComponent>();
-			const auto sprite = entity.GetComponent<SpriteComponent>();
+            if (isEntityOutsideCameraView && !renderableEntity.spriteComponent.isFixed) {
+				continue;
+            }
+            renderableEntities.emplace_back(renderableEntity);
+        }
 
-			// Setting the source rectangle of our sprite.
-			SDL_Rect srcRect = sprite.srcRect;
+        // Sort the vector by the z-index value
+        std::sort(renderableEntities.begin(), renderableEntities.end(), [](const RenderableEntity& a, const RenderableEntity& b) {
+            return a.spriteComponent.zIndex < b.spriteComponent.zIndex;
+            });
 
-			// Set the destination rectangle of our sprite.
-			SDL_Rect dstRect = { static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera.x)), static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera.y)), static_cast<int>(sprite.width * transform.scale.x), static_cast<int>(sprite.height * transform.scale.y) };
-			// This version of SDL_RenderCopy allows us to flip the sprite and rotate it. We are using this since we have a rotation variable in our transform component.
-			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, sprite.flip);
-			
-		}
-	}
+        // Loop all entities that the system is interested in
+        for (auto entity : renderableEntities) {
+            const auto transform = entity.transformComponent;
+            const auto sprite = entity.spriteComponent;
+
+            // Set the source rectangle of our original sprite texture
+            SDL_Rect srcRect = sprite.srcRect;
+
+            // Set the destination rectangle with the x,y position to be rendered
+            SDL_Rect dstRect = {
+                static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera.x)),
+                static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera.y)),
+                static_cast<int>(sprite.width * transform.scale.x),
+                static_cast<int>(sprite.height * transform.scale.y)
+            };
+
+            // Draw the texture on the destination renderer
+            SDL_RenderCopyEx(
+                renderer,
+                assetManager->GetTexture(sprite.assetID),
+                &srcRect,
+                &dstRect,
+                transform.rotation,
+                NULL,
+                sprite.flip
+            );
+        }
+    }
 };
