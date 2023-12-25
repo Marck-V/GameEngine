@@ -22,6 +22,7 @@
 #include "../Systems/LifespanSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
+#include "../Systems/RenderGUISystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 
@@ -63,12 +64,12 @@ void Engine::Init() {
 	// Get the current display mode and resolution of the first display.
 	SDL_GetCurrentDisplayMode(0, &displayMode);
 
-	windowWidth = 1280;
-	windowHeight = 720;
+	windowWidth = 1920;
+	windowHeight = 1080;
 
 
 
-	window = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Game Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_SHOWN | SDL_RENDERER_ACCELERATED);
 
 	if (!window) {
 		spdlog::error("Error creating SDL window.");
@@ -161,6 +162,8 @@ void Engine::LoadLevel(int level){
 	manager->AddSystem<LifespanSystem>();
 	manager->AddSystem<RenderTextSystem>();
 	manager->AddSystem<RenderHealthBarSystem>();
+	manager->AddSystem<RenderGUISystem>();
+
 	// Adding the textures to the asset container.
 	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
 	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
@@ -168,6 +171,7 @@ void Engine::LoadLevel(int level){
 	assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper-spritesheet.png");
 	assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");
 	assetManager->AddTexture(renderer, "bullet-image", "assets/images/bullet.png");
+	assetManager->AddTexture(renderer, "tree-image", "assets/images/tree.png");
 	assetManager->AddFont("charriot-font", "assets/fonts/charriot.ttf", 20);
 	// TODO: See if this can be improved by using a 2D array.
 	 
@@ -218,8 +222,8 @@ void Engine::LoadLevel(int level){
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
 	tank.Group("enemies");
-	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 100.0), glm::vec2(1.0, 1.0), 0.0);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+	tank.AddComponent<TransformComponent>(glm::vec2(470.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
 	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
@@ -231,7 +235,7 @@ void Engine::LoadLevel(int level){
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2, false);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
-	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -90), glm::vec2(0, 90), glm::vec2(-90, 0), glm::vec2(90, 0));
+	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -100), glm::vec2(0, 100), glm::vec2(-100, 0), glm::vec2(100, 0));
 	chopper.AddComponent<CameraComponent>();
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<HealthComponent>(100);
@@ -252,6 +256,16 @@ void Engine::LoadLevel(int level){
 	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
 	
+	Entity treeA = manager->CreateEntity();
+	treeA.AddComponent<TransformComponent>(glm::vec2(441.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	treeA.AddComponent<SpriteComponent>("tree-image", 16, 32, 2);
+	treeA.AddComponent<BoxColliderComponent>(16, 32);
+
+	Entity treeB = manager->CreateEntity();
+	treeB.AddComponent<TransformComponent>(glm::vec2(630.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	treeB.AddComponent<SpriteComponent>("tree-image", 16, 32, 2);
+	treeB.AddComponent<BoxColliderComponent>(16, 32);
+
 	Entity label = manager->CreateEntity();
 	SDL_Color white = { 255, 255, 255, 255 };
 	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 50, 10), "Chopper 1.0", "charriot-font", white, true);
@@ -317,10 +331,7 @@ void Engine::Render() {
 	if (isDebugMode) {
 		manager->GetSystem<RenderCollisionSystem>().Update(renderer, camera);
 
-		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
-		ImGui::Render();
-		ImGuiSDL::Render(ImGui::GetDrawData());
+		manager->GetSystem<RenderGUISystem>().Update(manager, camera);
 	}
 
 	// Show the back buffer.

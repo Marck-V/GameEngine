@@ -450,6 +450,7 @@
     <ClInclude Include="src\Systems\MovementSystem.h" />
     <ClInclude Include="src\Systems\ProjectileSystem.h" />
     <ClInclude Include="src\Systems\RenderCollisionSystem.h" />
+    <ClInclude Include="src\Systems\RenderGUISystem.h" />
     <ClInclude Include="src\Systems\RenderHealthBarSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Systems\RenderTextSystem.h" />

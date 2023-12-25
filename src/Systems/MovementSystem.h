@@ -25,8 +25,11 @@ class MovementSystem : public System {
 				transform.position.x += rigidbody.velocity.x * deltaTime;
 				transform.position.y += rigidbody.velocity.y * deltaTime;
 
-				//spdlog::info("Entity ID: {0}, Position: {1}, {2}", entity.GetID(), transform.position.x, transform.position.y);
+				bool isEntityOutsideMap = transform.position.x < 0 || transform.position.x > Engine::mapWidth || transform.position.y < 0 || transform.position.y > Engine::mapHeight;
+
+				if (isEntityOutsideMap && !entity.HasTag("player")) {
+					entity.Kill();
+				}
 			}
 		}
-
 };
