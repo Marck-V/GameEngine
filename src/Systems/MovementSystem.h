@@ -61,6 +61,18 @@ class MovementSystem : public System {
 				transform.position.x += rigidbody.velocity.x * deltaTime;
 				transform.position.y += rigidbody.velocity.y * deltaTime;
 
+				if (entity.HasTag("player")) {
+					int paddingLeft = 10;
+					int paddingRight = 10;
+					int paddingTop = 10;
+					int paddingBottom = 10;
+
+					transform.position.x = transform.position.x < paddingLeft ? paddingLeft : transform.position.x;
+					transform.position.x = transform.position.x > Engine::mapWidth - paddingRight ? Engine::mapWidth - paddingRight : transform.position.x;
+					transform.position.y = transform.position.y < paddingTop ? paddingTop : transform.position.y;
+					transform.position.y = transform.position.y > Engine::mapHeight - paddingBottom ? Engine::mapHeight - paddingBottom : transform.position.y;
+				}
+
 				bool isEntityOutsideMap = transform.position.x < 0 || transform.position.x > Engine::mapWidth || transform.position.y < 0 || transform.position.y > Engine::mapHeight;
 
 				if (isEntityOutsideMap && !entity.HasTag("player")) {
