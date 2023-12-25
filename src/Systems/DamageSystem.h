@@ -16,16 +16,18 @@ public:
 	}
 
 	void OnCollision(CollisionEvent& event) {
-		//spdlog::info("Damage system received a collision event detected between Entity ID: {} and Entity ID: {}", event.entityA.GetID(), event.entityB.GetID());
-		Entity a = event.entityA;
-		Entity b = event.entityB;
+		
+		Entity a = event.a;
+		Entity b = event.b;
 		
         if (a.IsInGroup("projectiles") && b.HasTag("player")) {
             OnProjectileHitsPlayer(a, b); // "a" is the projectile, "b" is the player
+            spdlog::info("Damage system received a collision event detected between Entity ID: {} and Entity ID: {}", event.a.GetID(), event.b.GetID());
         }
 
         if (b.IsInGroup("projectiles") && a.HasTag("player")) {
             OnProjectileHitsPlayer(b, a); // "b" is the projectile, "a" is the player
+            spdlog::info("Damage system received a collision event detected between Entity ID: {} and Entity ID: {}", event.a.GetID(), event.b.GetID());
         }
 
         if (a.IsInGroup("projectiles") && b.IsInGroup("enemies")) {

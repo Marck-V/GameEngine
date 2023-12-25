@@ -29,15 +29,17 @@ struct SpriteComponent {
 	int width;
 	int height;
 	int zIndex;
+	SDL_RendererFlip flip;
 	bool isFixed;
 	SDL_Rect srcRect;
-
+	
 	// TODO: Add layers
 	SpriteComponent(std::string assetID = "", int width = 0, int height = 0, int zIndex = 0 , bool isFixed = false, int srcRectX = 0, int srcRectY = 0) {
 		this->assetID = assetID;
 		this->width = width;
 		this->height = height;
 		this->zIndex = zIndex;
+		this->flip = SDL_FLIP_NONE;
 		this->isFixed = isFixed;
 		this->srcRect = { srcRectX, srcRectY, width, height };
 	}
@@ -104,7 +106,7 @@ struct ProjectileEmitterComponent {
 	int lastShotTime;
 	
 	// Constructor for the projectile component.
-	ProjectileEmitterComponent(glm::vec2 velocity = glm::vec2(0), int repeatFrequency = 0, int projectileDuration = 1000, int hitPercentageDamage = 0, bool isFriendly = false) {
+	ProjectileEmitterComponent(glm::vec2 velocity = glm::vec2(0), int repeatFrequency = 0, int projectileDuration = 1000, int hitPercentageDamage = 10, bool isFriendly = false) {
 		this->velocity = velocity;
 		this->repeatFrequency = repeatFrequency;
 		this->projectileDuration = projectileDuration;

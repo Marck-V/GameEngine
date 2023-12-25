@@ -6,9 +6,9 @@
 
 class CollisionEvent : public Event {
 public:
-	Entity entityA;
-	Entity entityB;
-	CollisionEvent(Entity entityA, Entity entityB) : entityA(entityA), entityB(entityB) {}
+	Entity a;
+	Entity b;
+	CollisionEvent(Entity a, Entity b) : a(a), b(b) {}
 };
 
 

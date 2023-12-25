@@ -35,7 +35,7 @@ public:
 			// Set the destination rectangle of our sprite.
 			SDL_Rect dstRect = { static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera.x)), static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera.y)), static_cast<int>(sprite.width * transform.scale.x), static_cast<int>(sprite.height * transform.scale.y) };
 			// This version of SDL_RenderCopy allows us to flip the sprite and rotate it. We are using this since we have a rotation variable in our transform component.
-			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(renderer, assetManager->GetTexture(sprite.assetID), &srcRect, &dstRect, transform.rotation, NULL, sprite.flip);
 			
 		}
 	}

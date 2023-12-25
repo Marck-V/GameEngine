@@ -222,18 +222,17 @@ void Engine::LoadLevel(int level){
 	// Creating the entities.
 	Entity tank = manager->CreateEntity();
 	tank.Group("enemies");
-	tank.AddComponent<TransformComponent>(glm::vec2(470.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 500.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
-	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
+	tank.AddComponent<BoxColliderComponent>(25, 18, glm::vec2(5, 7));
 	tank.AddComponent<HealthComponent>(100);
 
 	Entity chopper = manager->CreateEntity();
 	chopper.Tag("player");
 	chopper.AddComponent<TransformComponent>(glm::vec2(10.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 2, false);
+	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1, false);
 	chopper.AddComponent<AnimationComponent>(2, 10, true);
 	chopper.AddComponent<KeyboardControllerComponent>(glm::vec2(0, -100), glm::vec2(0, 100), glm::vec2(-100, 0), glm::vec2(100, 0));
 	chopper.AddComponent<CameraComponent>();
@@ -249,20 +248,22 @@ void Engine::LoadLevel(int level){
 
 	Entity truck = manager->CreateEntity();
 	truck.Group("enemies");
-	truck.AddComponent<TransformComponent>(glm::vec2(100.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+	truck.AddComponent<TransformComponent>(glm::vec2(300.0, 300.0), glm::vec2(1.0, 1.0), 0.0);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 10000, 10, false);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0.0, 100.0), 2000, 5000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
 	
 	Entity treeA = manager->CreateEntity();
-	treeA.AddComponent<TransformComponent>(glm::vec2(441.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	treeA.Group("obstacles");
+	treeA.AddComponent<TransformComponent>(glm::vec2(600.0, 495.0), glm::vec2(1.0, 1.0), 0.0);
 	treeA.AddComponent<SpriteComponent>("tree-image", 16, 32, 2);
 	treeA.AddComponent<BoxColliderComponent>(16, 32);
 
 	Entity treeB = manager->CreateEntity();
-	treeB.AddComponent<TransformComponent>(glm::vec2(630.0, 555.0), glm::vec2(1.0, 1.0), 0.0);
+	treeB.Group("obstacles");
+	treeB.AddComponent<TransformComponent>(glm::vec2(400.0, 495.0), glm::vec2(1.0, 1.0), 0.0);
 	treeB.AddComponent<SpriteComponent>("tree-image", 16, 32, 2);
 	treeB.AddComponent<BoxColliderComponent>(16, 32);
 
@@ -298,6 +299,7 @@ void Engine::Update()
 	 eventBus->Reset();
 
 	 // Perform the subscription of events for all systems.
+	 manager->GetSystem<MovementSystem>().SubscribeToEvents(eventBus);
 	 manager->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 	 manager->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
 	 manager->GetSystem<ProjectileSystem>().SubscribeToEvents(eventBus);
