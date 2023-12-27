@@ -29,7 +29,6 @@ class Engine
 		void Init();
 		void Run();
 		void ProcessInput();
-		void LoadLevel(int level);
 		void Update();
 		void Render();
 		void Destroy();

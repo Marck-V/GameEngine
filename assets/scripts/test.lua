@@ -20,3 +20,5 @@ function factorial(n)
 end
 
 print(factorial(7))
+
+print("The cube of 3 is ".. cube(3))
