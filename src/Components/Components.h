@@ -80,7 +80,7 @@ struct KeyboardControllerComponent {
 	glm::vec2 leftVel;
 	glm::vec2 rightVel;
 	
-	KeyboardControllerComponent(glm::vec2 upVel = glm::vec2(0), glm::vec2 downVel = glm::vec2(0), glm::vec2 leftVel = glm::vec2(0), glm::vec2 rightVel = glm::vec2(0)) {
+	KeyboardControllerComponent(glm::vec2 upVel = glm::vec2(0), glm::vec2 rightVel = glm::vec2(0), glm::vec2 downVel = glm::vec2(0), glm::vec2 leftVel = glm::vec2(0)) {
 		this->upVel = upVel;
 		this->downVel = downVel;
 		this->leftVel = leftVel;
@@ -160,5 +160,13 @@ struct TextLabelComponent {
 		this->assetID = assetID;
 		this->color = color;
 		this->isFixed = isFixed;
+	}
+};
+
+struct ScriptComponent {
+	sol::function func;
+	
+	ScriptComponent(sol::function func = sol::lua_nil) {
+		this->func = func;
 	}
 };

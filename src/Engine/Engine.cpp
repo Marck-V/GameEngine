@@ -23,6 +23,7 @@
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
 #include "../Systems/RenderGUISystem.h"
+#include "../src/Systems/ScriptSystem.h"
 #include "../src/Events/Events.h"
 #include "../src/EventBus/EventBus.h"
 #include "LevelLoader.h"
@@ -163,9 +164,14 @@ void Engine::Setup() {
 	manager->AddSystem<RenderTextSystem>();
 	manager->AddSystem<RenderHealthBarSystem>();
 	manager->AddSystem<RenderGUISystem>();
+	manager->AddSystem<ScriptSystem>();
+
+	// Create the bindings for the lua state.
+	manager->GetSystem<ScriptSystem>().CreateLuaBindings(lua);
 
 	LevelLoader loader;
-	loader.LoadLevel(manager, assetManager, renderer, 1);
+	lua.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);
+	loader.LoadLevel(lua, manager, assetManager, renderer, 1);
 }
 
 void Engine::Update()
@@ -195,16 +201,17 @@ void Engine::Update()
 	 manager->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
 	 manager->GetSystem<ProjectileSystem>().SubscribeToEvents(eventBus);
 
-	// Invoke all the systems in the manager.
+	// Update the registry to process the entitiies that are waiting to be created or destroyed.
 	manager->Update();
 
-	// Updating game objects.
+	// Invoking the systems needed to update the game.
 	manager->GetSystem<MovementSystem>().Update(deltaTime);
 	manager->GetSystem<CollisionSystem>().Update(eventBus);
 	manager->GetSystem<KeyboardControlSystem>().Update();
 	manager->GetSystem<CameraMovementSystem>().Update(camera);
 	manager->GetSystem<ProjectileSystem>().Update(manager);
 	manager->GetSystem<LifespanSystem>().Update();
+	manager->GetSystem<ScriptSystem>().Update(deltaTime, SDL_GetTicks());
 }
 
 void Engine::Render() {

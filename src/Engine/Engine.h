@@ -4,6 +4,7 @@
 #include <../src/ECS/ECS.h>
 #include <../src/AssetManager/AssetManager.h>
 #include "../src/EventBus/EventBus.h"
+#include <sol/sol.hpp>
 
 const int FPS = 60;
 const int FRAME_TARGET_TIME = 1000 / FPS;
@@ -11,7 +12,6 @@ const int FRAME_TARGET_TIME = 1000 / FPS;
 class Engine
 {
 	private:
-		
 		bool isRunning;
 		bool isDebugMode;
 		int msPrevFrame = 0;
@@ -19,6 +19,7 @@ class Engine
 		SDL_Renderer* renderer;
 		SDL_Rect camera;
 		
+		sol::state lua; // Lua state.
 		std::unique_ptr<Manager> manager; // Unique pointer to the manager class.
 		std::unique_ptr<AssetManager> assetManager; // Unique pointer to the asset container class.
 		std::unique_ptr<EventBus> eventBus; // Unique pointer to the event bus class.

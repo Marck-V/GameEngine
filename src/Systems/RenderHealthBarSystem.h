@@ -51,7 +51,7 @@ public:
 
             // Render the health percentage text label indicator
             std::string healthText = std::to_string(health.healthPercentage);
-            SDL_Surface* surface = TTF_RenderText_Blended(AssetManager->GetFont("charriot-font"), healthText.c_str(), healthBarColor);
+            SDL_Surface* surface = TTF_RenderText_Blended(AssetManager->GetFont("pico8-font-5"), healthText.c_str(), healthBarColor);
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
             SDL_FreeSurface(surface);
 
