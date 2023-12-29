@@ -2791,7 +2791,6 @@ Level = {
                     hit_percentage_damage = 10,
                     friendly = false
                 },
-                --[[
                 on_update_script = {
                     [0] =
                     function(entity, delta_time, ellapsed_time)
@@ -2816,7 +2815,6 @@ Level = {
                         end
                     end
                 }
-                --]]
             }
         },
         {
