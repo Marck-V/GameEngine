@@ -1,6 +1,9 @@
 #pragma once
-#include "src/ECS/ECS.h"
-#include "src/AssetManager/AssetManager.h"
+
+//#include "src/ECS/ECS.h"
+//#include "src/AssetManager/AssetManager.h"
+#include "ECS/ECS.h"
+#include "AssetManager/AssetManager.h"
 #include <SDL.h>
 #include <memory>
 #include <sol/sol.hpp>

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "src/ECS/ECS.h"
-#include "src/Components/Components.h"
-
+//#include "src/ECS/ECS.h"
+//#include "src/Components/Components.h"
+#include "ECS/ECS.h"
+#include "Components/Components.h"
 std::tuple<double, double> GetEntityPosition(Entity entity) {
     if (entity.HasComponent<TransformComponent>()) {
         const auto transform = entity.GetComponent<TransformComponent>();

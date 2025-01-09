@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../ECS/ECS.h"
-#include "./src/Components/Components.h"
+//#include "../ECS/ECS.h"
+//#include "./src/Components/Components.h"
+#include "ECS/ECS.h"
+#include "Components/Components.h"
 #include <SDL.h>
 
 class AnimationSystem : public System {

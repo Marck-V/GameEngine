@@ -1,6 +1,8 @@
 #include "LevelLoader.h"
-#include "src/Components/Components.h"
-#include "src/Engine/Engine.h"
+//#include "src/Components/Components.h"
+//#include "src/Engine/Engine.h"
+#include "Components/Components.h"
+#include "Engine/Engine.h"
 #include <fstream>
 
 LevelLoader::LevelLoader()
@@ -241,8 +243,8 @@ void LevelLoader::LoadLevel(sol::state& lua, const std::unique_ptr<Manager>& man
 
 
 	//// Adding the textures to the asset container.
-	//assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
-	//assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
+	assetManager->AddTexture(renderer, "tank-image", "assets/images/tank-panther-right.png");
+	assetManager->AddTexture(renderer, "truck-image", "assets/images/truck-ford-right.png");
 	//assetManager->AddTexture(renderer, "tilemap-image", "assets/tilemaps/jungle.png");
 	//assetManager->AddTexture(renderer, "chopper-image", "assets/images/chopper-spritesheet.png");
 	//assetManager->AddTexture(renderer, "radar-image", "assets/images/radar.png");

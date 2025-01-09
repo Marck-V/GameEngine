@@ -79,8 +79,8 @@
     <LibraryPath>C:\Users\M\source\repos\GameEngine\GameEngine\libs\lua;F:\Libraries\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\M\source\repos\GameEngine\GameEngine\libs\lua;C:\Users\M\source\repos\GameEngine\GameEngine\libs;F:\Libraries\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\M\source\repos\GameEngine\GameEngine\libs\lua;F:\Libraries\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\GameEngine\libs\lua;E:\GameEngine\libs;F:\Libraries\SDL2\include;E:\GameEngine\src;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\GameEngine\libs\lua;F:\Libraries\SDL2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\M\source\repos\GameEngine\GameEngine\libs\lua;C:\Users\M\source\repos\GameEngine\GameEngine\libs;F:\Libraries\SDL2\include;$(IncludePath)</IncludePath>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\M\source\repos\GameEngine\GameEngine;C:\Users\M\Documents\Libraries\SDL2-2.28.3\include;C:\Users\M\Documents\Libraries\glfw-3.3.8.bin.WIN64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\GameEngine\src;E:\GameEngine\libs;C:\Users\villa\Documents\Libraries\SDL2-2.30.11\include;C:\Users\villa\Documents\Libraries\glfw-3.4\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/sdl /w34996 %(AdditionalOptions)</AdditionalOptions>
@@ -134,7 +134,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\M\Documents\Libraries\SDL2-2.28.3\lib\x64;C:\Users\M\Documents\Libraries\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\villa\Documents\Libraries\SDL2-2.30.11\lib\x64;C:\Users\villa\Documents\Libraries\glfw-3.4.bin.WIN64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;Shell32.lib;liblua54.a</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
